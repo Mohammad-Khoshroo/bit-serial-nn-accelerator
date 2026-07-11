@@ -1,11 +1,10 @@
 import numpy as np
-from math import *
+from math import * # pyright: ignore[reportWildcardImportFromLibrary]
 import torch
 import torch.nn.init as init
 import cocotb
 import cocotb.triggers
 from cocotb.triggers import Timer
-from cocotb.binary import BinaryValue
 from cocotb.triggers import FallingEdge, Timer, RisingEdge
 from cocotb.clock import Clock
 
