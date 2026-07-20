@@ -10,7 +10,7 @@ from cocotb_tools.runner import get_runner
 
 
 def test_my_design_runner():
-    sim = os.getenv("SIM", "icarus")
+    sim = os.getenv("SIM", "verilator")
 
     proj_path = Path(__file__).resolve().parent
 

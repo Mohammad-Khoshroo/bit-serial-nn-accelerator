@@ -1,2 +1,4 @@
 [submodule "external"]
 	path = external
+[submodule "lib/verilator"]
+	path = lib/verilator
