@@ -64,38 +64,3 @@ async def layer_scheduler_tb(dut):
     end_time = get_sim_time(units="ns")
     
     print(f'hardware layer takes: {end_time - start_time}')
-
-    
-
-class layer_scheduler():
-    def __init__(self, layer, dut, logic_duty, axi_duty):
-        self.layer = layer
-        self.dut = dut
-        self.logic_duty = logic_duty
-        self.axi_duty = axi_duty
-
-        self.axi_master_config = AxiMaster(AxiBus.from_prefix(dut, "s00_axi"), dut.s00_axi_aclk, dut.s00_axi_aresetn, reset_active_level=False)
-        self.axi_master_iwb = AxiMaster(AxiBus.from_prefix(dut, "s01_axi"), dut.s01_axi_aclk, dut.s01_axi_aresetn, reset_active_level=False)
-        self.axi_master_ra = AxiMaster(AxiBus.from_prefix(dut, "s02_axi"), dut.s02_axi_aclk, dut.s02_axi_aresetn, reset_active_level=False)
-        self.driver = accel_driver(dut, logic_duty, axi_duty, self.axi_master_config, self.axi_master_iwb, self.axi_master_ra)
-
-    def forward(self, input):
-        pass
-
-class accel_driver():
-    def __init__(self, dut, logic_duty, axi_duty, axi_master_config, axi_master_iwb, axi_master_ra):
-        self.dut = dut
-        self.logic_duty = logic_duty
-        self.axi_duty = axi_duty
-        self.axi_master_config = axi_master_config
-        self.axi_master_iwb = axi_master_iwb
-        self.axi_master_ra = axi_master_ra
-
-    async def hw_setup(self):
-        pass
-
-    async def bias_setup(self):
-        pass
-
-    async def recv_output(self):
-        pass
