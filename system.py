@@ -1,4 +1,6 @@
 import numpy as np
+import torch
+import torch.nn.functional as F
 import cocotb
 from cocotb.triggers import Timer
 from cocotbext.axi import AxiBus, AxiMaster
@@ -19,7 +21,7 @@ class HWConfig:
 # Hardware Driver
 # --------------------------------------------------------------------------
 
-class accel_driver():
+class accelerator_driver():
 
 
     def __init__(self, dut, logic_duty, axi_duty, axi_master_config, axi_master_iwb, axi_master_ra):
@@ -105,10 +107,10 @@ class accel_driver():
     
 
 
-# Layer Scheduler
+# Layer tiling
 # --------------------------------------------------------------------------
 
-class layer_scheduler():
+class layer_tiling():
     def __init__(self, layer, dut, logic_duty, axi_duty):
         self.layer = layer
         self.dut = dut
@@ -119,7 +121,90 @@ class layer_scheduler():
         self.axi_master_iwb = AxiMaster(AxiBus.from_prefix(dut, "s01_axi"), dut.s01_axi_aclk, dut.s01_axi_aresetn, reset_active_level=False)
         self.axi_master_ra = AxiMaster(AxiBus.from_prefix(dut, "s02_axi"), dut.s02_axi_aclk, dut.s02_axi_aresetn, reset_active_level=False)
         
-        self.driver = accel_driver(dut, logic_duty, axi_duty, self.axi_master_config, self.axi_master_iwb, self.axi_master_ra)
+        self.driver = accelerator_driver(dut, logic_duty, axi_duty, self.axi_master_config, self.axi_master_iwb, self.axi_master_ra)
 
     async def forward(self, input_tensor):
-        pass
+        """
+           u8: uint-8bit
+           i8: int-8bit
+           q_: quantized
+            
+        """            
+        layer = self.layer
+        
+        # quantization
+        q_input  = layer.qunatized_input(input_tensor)
+        q_weight = layer.qunatized_weight()
+        
+        # zero-point managing
+        all_positive = layer.qact.all_positive
+        if all_positive:
+            input_zp = 0
+            q_input_u8 = q_input.to(torch.uint8)
+        else:
+            # Shift signed q_input [-128, 127] to unsigned [0, 255]
+            input_zp = 128
+            q_input_u8 = (q_input + 128).to(torch.uint8)
+            
+        q_weight_i8 = q_weight.to(torch.int8)
+        
+        if 'linear' in layer.ltype:
+            # MLP and Fully-Connected Networks 
+            await self._process_linear(q_input_u8, q_weight_i8, input_zp, layer)
+        elif 'conv2d' in layer.ltype:
+            # CNN - convolution
+            await self._process_conv2d(q_input_u8, q_weight_i8, input_zp, input_tensor, layer)
+        
+        return self.output
+    
+    async def _process_linear(self, q_input_u8, q_weight_i8, input_zp, layer):
+            
+            scale = layer._weight_scale()
+            alpha = (scale * layer._activation_scale()).view(1, -1)
+                    
+            batch_input_num, in_features = q_input_u8.shape
+            out_features = q_weight_i8.shape[0]
+            
+            if layer.bias is not None:
+                bias_int = (layer.bias / alpha.squeeze()).round().to(torch.int32)
+            else:
+                bias_int = torch.zeros(out_features, dtype=torch.int32)
+            
+            # acc: accelerator
+            acc_out = torch.zeros((batch_input_num, out_features), dtype=torch.int32)
+            
+            for n in range(batch_input_num):
+            
+                # ob: tile output block
+                # ib: tile input  block
+                for ob_start in range(0, out_features, HWConfig.MAX_PES):
+                    
+                    # for handling 'the last output block' which can be less than MAX_PES
+                    ob_size = min(out_features - ob_start, HWConfig.MAX_PES)
+                    
+                    bias_tile = bias_int[ob_start:ob_start+ob_size].cpu().numpy()
+                    await self.driver.bias_setup(bias_tile, ob_size)
+                    
+                    for ib_start in range(0, in_features, HWConfig.MAX_INPUT_SIZE):
+                        
+                        # for handling 'the last input block' which can be less than MAX_INPUT_SIZE
+                        ib_size = min(in_features - ib_start, HWConfig.MAX_INPUT_SIZE)
+                        
+                        input_tile = q_input_u8[n, ib_start:ib_start+ib_size].cpu().numpy()
+                        weight_tile = q_weight_i8[ob_start:ob_start+ob_size, ib_start:ib_start+ib_size].cpu().numpy()
+                        
+                        await self.driver.hw_setup(input_tile, weight_tile, input_zp, ib_size, ob_size)
+                        
+                    out_tile = await self.driver.read_output(ob_size)
+                    acc_out[n, ob_start:ob_start+ob_size] += torch.from_numpy(out_tile)
+                    
+            
+            weight_sum = q_weight_i8.float().sum(dim=1)
+            offset = layer.qact.beta * scale * weight_sum
+            offset = offset.view(1, -1)
+            
+            self.output = acc_out.float() * alpha + offset
+            
+
+            
+    
