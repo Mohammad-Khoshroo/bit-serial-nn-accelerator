@@ -165,6 +165,11 @@ class layer_tiling():
             N, in_features = q_input_u8.shape
             out_features = q_weight_i8.shape[0]
             
+            if layer.bias is not None:
+                bias_int = (layer.bias / alpha.squeeze()).round().to(torch.int32)
+            else:
+                bias_int = torch.zeros(out_features, dtype=torch.int32)
+            
             # acc: accelerator
             acc_out = torch.zeros((N, out_features), dtype=torch.int32)
             
@@ -177,7 +182,7 @@ class layer_tiling():
                     # for handling 'the last output block' which can be less than MAX_PES
                     ob_size = min(out_features - ob_start, HWConfig.MAX_PES)
                     
-                    bias_tile = np.zeros(ob_size, dtype=np.int32)
+                    bias_tile = bias_int[ob_start:ob_start+ob_size].cpu().numpy()
                     await self.driver.bias_setup(bias_tile, ob_size)
                     
                     for ib_start in range(0, in_features, HWConfig.MAX_INPUT_SIZE):
@@ -196,9 +201,6 @@ class layer_tiling():
             
             weight_sum = q_weight_i8.float().sum(dim=1)
             offset = layer.qact.beta * scale * weight_sum
-            
-            if layer.bias is not None:
-                offset = offset + layer.bias
             offset = offset.view(1, -1)
             
             self.output = acc_out.float() * alpha + offset
@@ -226,6 +228,11 @@ class layer_tiling():
         scale = layer._weight_scale()
         alpha = (scale * layer._activation_scale()).view(1, -1, 1, 1)
         
+        if layer.bias is not None:
+            bias_int = (layer.bias / alpha.squeeze()).round().to(torch.int32)
+        else:
+            bias_int = torch.zeros(out_channels, dtype=torch.int32)
+            
         # acc: accelerator 
         acc_out = torch.zeros((N, out_channels, Hout, Wout), dtype=torch.int32)
         
@@ -240,7 +247,7 @@ class layer_tiling():
                         
                         ob_size = min(out_channels - ob_start, HWConfig.MAX_PES)
                         
-                        bias_tile = np.zeros(ob_size, dtype=np.int32)
+                        bias_tile = bias_int[ob_start:ob_start+ob_size].cpu().numpy()
                         await self.driver.bias_setup(bias_tile, ob_size)
                         
                         for kh in range(Kh):
@@ -277,7 +284,4 @@ class layer_tiling():
         offset = F.conv2d(valid_input, q_weight_i8.float(), None, stride, padding, dilation, groups)
         offset = offset * (layer.qact.beta * scale).view(1, -1, 1, 1)
         
-        if layer.bias is not None:
-            offset = offset + layer.bias.view(1, -1, 1, 1)
-            
         self.output = acc_out.float() * alpha + offset

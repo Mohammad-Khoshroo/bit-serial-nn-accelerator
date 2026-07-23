@@ -1,0 +1,105 @@
+rm -f results.xml
+"make" -f makefile results.xml
+make[1]: Entering directory '/mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10'
+/usr/local/bin/verilator -cc --exe -Mdir build --top-module cluster_wrapper -Ihardware/include --timescale 1ns/1ps --vpi --public-flat-rw --prefix Vtop -o Vtop -LDFLAGS "-Wl,-rpath,/home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotb/libs -L/home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotb/libs -lcocotbvpi_verilator" --trace --timing -Wno-ASCRANGE -Wno-WIDTHEXPAND -Wno-WIDTHTRUNC -Wno-CASEINCOMPLETE -Wno-COMBDLY -Wno-LATCH -Wno-UNOPTFLAT hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0.v hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0_S00_AXI.v hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0.v hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0_S00_AXI.v hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0.v hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0_S00_AXI.v hardware/src/Cluster/cluster_ctrl.v hardware/src/Cluster/cluster_dp.v hardware/src/Cluster/cluster_top.v hardware/src/Cluster-wrapper/cluster_wrapper.v hardware/src/utils/bram_sp.v hardware/src/utils/mull_add.v /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotb/share/lib/verilator/verilator.cpp
+- V e r i l a t i o n   R e p o r t: Verilator 5.050 2026-07-01 rev v5.050-60-g3d2421f3b
+- Verilator: Built from 0.916 MB sources in 13 modules, into 1.373 MB in 10 C++ files needing 0.000 MB
+- Verilator: Walltime 0.687 s (elab=0.018, cvt=0.178, bld=0.000); cpu 0.182 s on 1 threads; allocated 40.723 MB
+make -C build  -f Vtop.mk
+make[2]: Entering directory '/mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/build'
+ccache g++  -I.  -MMD -I/usr/local/share/verilator/include -I/usr/local/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable      -Os  -c -o verilator.o /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotb/share/lib/verilator/verilator.cpp
+ccache g++ -Os  -I.  -MMD -I/usr/local/share/verilator/include -I/usr/local/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable      -c -o verilated.o /usr/local/share/verilator/include/verilated.cpp
+ccache g++ -Os  -I.  -MMD -I/usr/local/share/verilator/include -I/usr/local/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable      -c -o verilated_dpi.o /usr/local/share/verilator/include/verilated_dpi.cpp
+ccache g++ -Os  -I.  -MMD -I/usr/local/share/verilator/include -I/usr/local/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable      -c -o verilated_vpi.o /usr/local/share/verilator/include/verilated_vpi.cpp
+ccache g++ -Os  -I.  -MMD -I/usr/local/share/verilator/include -I/usr/local/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable      -c -o verilated_vcd_c.o /usr/local/share/verilator/include/verilated_vcd_c.cpp
+ccache g++ -Os  -I.  -MMD -I/usr/local/share/verilator/include -I/usr/local/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable      -c -o verilated_threads.o /usr/local/share/verilator/include/verilated_threads.cpp
+python3 /usr/local/share/verilator/bin/verilator_includer -DVL_INCLUDE_OPT=include Vtop.cpp Vtop___024root__0.cpp Vtop__Dpi.cpp Vtop__Trace__0.cpp Vtop__ConstPool__0__Slow.cpp Vtop___024root__Slow.cpp Vtop___024root__0__Slow.cpp Vtop__Syms__Slow.cpp Vtop__Trace__0__Slow.cpp Vtop__TraceDecls__0__Slow.cpp > Vtop__ALL.cpp
+ccache g++ -Os  -I.  -MMD -I/usr/local/share/verilator/include -I/usr/local/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable      -c -o Vtop__ALL.o Vtop__ALL.cpp
+g++    -rdynamic verilator.o verilated.o verilated_dpi.o verilated_vpi.o verilated_vcd_c.o verilated_threads.o Vtop__ALL.a   -Wl,-rpath,/home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotb/libs -L/home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotb/libs -lcocotbvpi_verilator  -pthread -lpthread -latomic -ldl   -o Vtop
+rm Vtop__ALL.verilator_deplist.tmp
+make[2]: Leaving directory '/mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/build'
+rm -f results.xml
+COCOTB_TEST_MODULES=test_bench COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=cluster_wrapper TOPLEVEL_LANG=verilog \
+         build/Vtop  --trace --timing -Wno-ASCRANGE -Wno-WIDTHEXPAND -Wno-WIDTHTRUNC -Wno-CASEINCOMPLETE -Wno-COMBDLY -Wno-LATCH -Wno-UNOPTFLAT   
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:93   in _embed_init_python              Using Python 3.12.4 interpreter at /usr/bin/python3
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:79   in gpi_print_registered_impl       VPI registered
+     0.00ns INFO     cocotb                             Running on Verilator version 5.050 2026-07-01
+     0.00ns INFO     cocotb                             Seeding Python random module with 1784821068
+     0.00ns INFO     cocotb                             Initialized cocotb v2.0.1 from /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_bench.test_conv2d_layer (1/2)
+                                                            Test QuantConv2d layer with padding and bias against Golden Model.
+     0.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:25: DeprecationWarning: The 'units' argument has been renamed to 'unit'.
+                                                          await cocotb.start(Clock(dut.s00_axi_aclk, axi_duty, units="ps").start()) # pyright: ignore[reportArgumentType]
+     0.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:25: DeprecationWarning: Use ``cocotb.start_soon`` instead.
+                                                          await cocotb.start(Clock(dut.s00_axi_aclk, axi_duty, units="ps").start()) # pyright: ignore[reportArgumentType]
+     0.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:26: DeprecationWarning: The 'units' argument has been renamed to 'unit'.
+                                                          await cocotb.start(Clock(dut.s01_axi_aclk, axi_duty, units="ps").start()) # pyright: ignore[reportArgumentType]
+     0.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:26: DeprecationWarning: Use ``cocotb.start_soon`` instead.
+                                                          await cocotb.start(Clock(dut.s01_axi_aclk, axi_duty, units="ps").start()) # pyright: ignore[reportArgumentType]
+     0.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:27: DeprecationWarning: The 'units' argument has been renamed to 'unit'.
+                                                          await cocotb.start(Clock(dut.s02_axi_aclk, axi_duty, units="ps").start()) # pyright: ignore[reportArgumentType]
+     0.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:27: DeprecationWarning: Use ``cocotb.start_soon`` instead.
+                                                          await cocotb.start(Clock(dut.s02_axi_aclk, axi_duty, units="ps").start()) # pyright: ignore[reportArgumentType]
+     0.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:28: DeprecationWarning: The 'units' argument has been renamed to 'unit'.
+                                                          await cocotb.start(Clock(dut.logic_clk,  logic_duty, units="ps").start()) # pyright: ignore[reportArgumentType]
+     0.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:28: DeprecationWarning: Use ``cocotb.start_soon`` instead.
+                                                          await cocotb.start(Clock(dut.logic_clk,  logic_duty, units="ps").start()) # pyright: ignore[reportArgumentType]
+     0.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:34: DeprecationWarning: The 'units' argument has been renamed to 'unit'.
+                                                          await Timer(100, units="ns") # pyright: ignore[reportArgumentType]
+   100.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:40: DeprecationWarning: The 'units' argument has been renamed to 'unit'.
+                                                          await Timer(200, units="ns") # pyright: ignore[reportArgumentType]
+   300.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:69: DeprecationWarning: The 'units' argument has been renamed to 'unit'.
+                                                          start_time = get_sim_time(units="ns") # pyright: ignore[reportArgumentType]
+   300.00ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/stream.py:120: DeprecationWarning: Use `handle.set(Immediate(...))` or `handle.value = Immediate(...)` instead.
+                                                          self.valid.setimmediatevalue(self._valid_init)
+   300.00ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/stream.py:133: DeprecationWarning: Use `handle.set(Immediate(...))` or `handle.value = Immediate(...)` instead.
+                                                          s.setimmediatevalue(v)
+   300.00ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/stream.py:115: DeprecationWarning: Use `handle.set(Immediate(...))` or `handle.value = Immediate(...)` instead.
+                                                          self.ready.setimmediatevalue(self._ready_init)
+   300.00ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/reset.py:59: DeprecationWarning: Use `signal.value_change` instead.
+                                                          await Edge(reset_signal)
+   300.35ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/axi_master.py:630: DeprecationWarning: The data field will be removed in a future release.
+                                                          cmd.event.set(write_resp)
+   300.35ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/axi_master.py:423: DeprecationWarning: The data field will be removed in a future release.
+                                                          return event.data
+   301.57ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/axi_master.py:1030: DeprecationWarning: The data field will be removed in a future release.
+                                                          cmd.event.set(read_resp)
+   301.57ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/axi_master.py:834: DeprecationWarning: The data field will be removed in a future release.
+                                                          return event.data
+   301.57ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/system.py:88: DeprecationWarning: The 'units' argument has been renamed to 'unit'.
+                                                          await Timer(10, units='ns') # pyright: ignore[reportArgumentType]
+ 12628.31ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:74: DeprecationWarning: The 'units' argument has been renamed to 'unit'.
+                                                          end_time = get_sim_time(units="ns") # pyright: ignore[reportArgumentType]
+
+--- Conv2d Golden Output Sample ---
+tensor([-0.0084,  0.0342,  0.0060, -0.0516,  0.0109], grad_fn=<SliceBackward0>)
+--- Conv2d Hardware Output Sample ---
+tensor([-0.0084,  0.0342,  0.0060, -0.0516,  0.0109], grad_fn=<SliceBackward0>)
+
+[SUCCESS] Conv2d test passed! Execution time: 12328.31 ns
+ 12628.31ns INFO     cocotb.regression                  test_bench.test_conv2d_layer passed
+ 12628.31ns INFO     cocotb.regression                  running test_bench.test_linear_layer (2/2)
+                                                            Test QuantLinear (MLP) layer with bias against Golden Model.
+ 12928.31ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:109: DeprecationWarning: The 'units' argument has been renamed to 'unit'.
+                                                          start_time = get_sim_time(units="ns") # pyright: ignore[reportArgumentType]
+ 12977.66ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:114: DeprecationWarning: The 'units' argument has been renamed to 'unit'.
+                                                          end_time = get_sim_time(units="ns") # pyright: ignore[reportArgumentType]
+
+--- Linear Golden Output Sample ---
+tensor([ 0.0465, -0.0002,  0.1097,  0.0039,  0.0790], grad_fn=<SliceBackward0>)
+--- Linear Hardware Output Sample ---
+tensor([ 0.0465, -0.0002,  0.1097,  0.0039,  0.0790], grad_fn=<SliceBackward0>)
+
+[SUCCESS] Linear test passed! Execution time: 49.350000000000364 ns
+ 12977.66ns INFO     cocotb.regression                  test_bench.test_linear_layer passed
+ 12977.66ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_bench.test_conv2d_layer   PASS       12628.31          26.91        469.35  **
+                                                        ** test_bench.test_linear_layer   PASS         349.35           0.72        485.16  **
+                                                        **************************************************************************************
+                                                        ** TESTS=2 PASS=2 FAIL=0 SKIP=0              12977.66          27.64        469.61  **
+                                                        **************************************************************************************
+- :0: Verilog $finish
+make[1]: Leaving directory '/mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10'

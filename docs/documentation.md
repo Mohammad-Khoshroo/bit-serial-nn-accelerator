@@ -65,16 +65,17 @@ Notice the first term: $\alpha \times \sum (q_x \times q_w)$. This is exactly wh
 
 Notice the second term: $\beta \times S_w \times \sum (q_w)$. Because the hardware does not know about $\beta$ (the input shift), this term is not computed by the hardware. It must be calculated in Python as the `Offset`. In Linear layers, this is simply `offset = layer.qact.beta * scale * weight_sum`.
 
-**Step 4: Quantizing the Bias for Hardware**
-Instead of adding the float bias ($b_{float}$) in Python at the end, we want the hardware to do it. The hardware accepts a 32-bit integer bias ($b_{int32}$) and adds it inside the accumulator:
+**Step 4: Quantizing the Bias for Hardware (Crucial Implementation Detail)**
+Instead of adding the float bias ($b_{float}$) in Python at the end, we offload this to the hardware. The hardware accepts a 32-bit integer bias ($b_{int32}$) and adds it inside the accumulator:
 $$ \text{Hardware Int32 Output} = \sum (q_x \times q_w) + b_{int32} $$
 
 If we substitute this back into our Float Output equation:
 $$ \text{Float Output} = \alpha \times \left( \sum (q_x \times q_w) + b_{int32} \right) + \text{Offset} $$
 $$ \text{Float Output} = \alpha \times \sum (q_x \times q_w) + \alpha \times b_{int32} + \text{Offset} $$
 
-For this to equal the original equation ($\alpha \times \sum (q_x \times q_w) + \text{Offset} + b_{float}$), the bias we send to the hardware must be:
+For this to equal the original equation ($\alpha \times \sum (q_x \times q_w) + \text{Offset} + b_{float}$), the bias we send to the hardware must be quantized first:
 $$ b_{int32} = \text{round}\left( \frac{b_{float}}{\alpha} \right) $$
+In Python, this is implemented as: `bias_int = (layer.bias / alpha.squeeze()).round().to(torch.int32)`. This `bias_int` is sent to the hardware *before* computation. The original float bias is no longer added in Python.
 
 **Step 5: The Conv2d Offset Problem & The All-Ones Trick**
 In a Linear layer, $\sum(q_w)$ (the sum of weights) is a single constant because all weights are always used. 
@@ -128,7 +129,7 @@ byte_ram[1] <= S_AXI_WDATA[15:8];  // Next byte goes to byte 1
 
 ## Part 3: Cocotb Driver Architecture & Implementation
 
-In the physical board, an ARM processor runs C code (`LLRT/driver.c`) to communicate with the FPGA. In our simulation, we replace the ARM processor with a Python script. The `accel_driver` class in `src/system.py` is the direct Python equivalent of the C driver.
+In the physical board, an ARM processor runs C code (`LLRT/driver.c`) to communicate with the FPGA. In our simulation, we replace the ARM processor with a Python script. The `accelerator_driver` class in `src/system.py` is the direct Python equivalent of the C driver.
 
 ### 3.1 Hardware Configuration Mirroring (`HwConfig`)
 Verilog parameters (macros from `hw_config.vh`) are evaluated at compile-time. Since Cocotb runs at runtime, it cannot read Verilog macros directly. To keep the Python code synchronized with the hardware, a mirror configuration class is used:
@@ -147,22 +148,27 @@ The driver interacts with three AXI4 Slave interfaces. The Verilog code maps spe
 | **Input/Weight** | `axi_master_iwb` | 8-bit Data BRAMs | `byte_ram[0..31]=inputs`, `byte_ram[32..]=weights` |
 | **Register Array**| `axi_master_ra` | 32-bit Accumulators | `byte_ram[0..127]=bias/output` |
 
-### 3.3 Driver Methods
+### 3.3 Driver Methods & The Critical Scheduling Fix
+
+There was a critical scheduling bug in the initial driver implementation where the `start` signal was asserted *before* the inputs and weights were fully written to BRAM. Because the hardware FSM transitions from `S_IDLE` to `S_CALCULATE` immediately upon receiving `start=1`, triggering it early causes the hardware to process garbage data.
+
+**The Rule:** Data must be written to BRAM, and `output_num` must be configured, *before* the `start` bit is set.
 
 #### A. `bias_setup(bias_tile, o0)`
-Writes 32-bit bias values to the Register Array BRAM. As explained in the math section (1.4), the floating-point bias is first divided by $\alpha$ and rounded to the nearest integer before being sent here. The hardware expects exactly `MAX_PES` registers, so we pad the rest of the NumPy array with zeros and write to offset `0x00`.
+Writes 32-bit quantized bias values ($b_{int32}$) to the Register Array BRAM. As explained in section 1.4, the floating-point bias is first divided by $\alpha$ and rounded to the nearest integer in Python. The hardware expects exactly `MAX_PES` registers, so we pad the rest of the NumPy array with zeros and write to offset `0x00`.
 
 #### B. `hw_setup(input_tile, weight_tile, input_zp, i0, o0)`
-Sends data, configures the engine, starts it, and waits for completion.
+Sends data, configures the engine, starts it, and waits for completion. **The order of operations here is strictly enforced:**
+
 1.  **Write Inputs:** Pack `i0` inputs into a 32-element `uint8` array. Write to `axi_master_iwb` offset `0x00`.
 2.  **Write Weights:** For each PE `k`, pack 32 weights. Write to offset `(k + 1) * 32`.
 3.  **Configure Output Num:** Write `(o0 - 1)` to `axi_master_config` offset `0x04`.
-4.  **Configure Start/Input:** Pack `start(1)`, `input_zp`, `input_num` into a 32-bit word and write to offset `0x00`.
+4.  **Configure Start/Input (Trigger):** Pack `start(1)`, `input_zp`, `input_num` into a 32-bit word and write to offset `0x00`. This triggers the FSM, so it must be the absolute last step.
 5.  **Poll for Done:** Read offset `0x04`. The `done` flag is in `byte_ram[6]`. Since reading `0x04` fetches bytes 4, 5, 6, and 7, byte 6 is at index `2` in the received array. The Pythonic code `done = bool(read_val.data[2])` checks this flag without complex bitwise shifting.
-6.  **Clear Start:** Write `0` to offset `0x00` to return the FSM to `S_IDLE`.
+6.  **Clear Start:** Write `0` to offset `0x00` to return the FSM to `S_IDLE` for the next tile.
 
 #### C. `recv_output(o0)`
-Reads 128 bytes (32 x 32-bit words) from `axi_master_ra` offset `0x00` and converts them back into an `int32` NumPy array.
+Reads 128 bytes (32 x 32-bit words) from `axi_master_ra` offset `0x00` and converts them back into an `int32` NumPy array. This happens after the `done` flag is polled.
 
 ### 3.4 C-to-Python Translation Evidence
 The Python implementation strictly follows the logic of `src/LLRT/driver/driver.c`.
@@ -189,6 +195,117 @@ read_val = await self.axi_master_config.read(0x04, length=4)
 done = bool(read_val.data[2]) # byte_ram[6] is at index 2 of the 4-byte read
 ```
 
-***
+---
 
-حالا که مستندات کامل شد و کدهای `system.py` هم تایید نهایی شدند، می‌توانیم به سراغ ساخت فایل‌های اجرایی (`testbench.py`, `makefile`, `test_runner.py`) برویم تا پروژه را اجرا کنیم! درخواستتان را بفرمایید.
+## Part 4: CNN & Conv2d Implementation Deep Dive (Theory & Code)
+
+### 4.1 The Theory: Conv2d Math and Zero-Point Padding
+In a standard floating-point Conv2d, the sliding window multiplies input pixels by weights. When the window is at the edge of the image, `padding` is used. In floating-point, padding is simply `0.0`.
+
+However, in our quantized hardware, the input is `uint8` and has a Zero Point ($ZP$). The hardware computes: `(Input - ZP) * Weight`. 
+If we pad the image with `0` (integer zero), the hardware will compute `(0 - ZP) * Weight = -ZP * Weight`, which introduces a massive artificial error! 
+
+**The Solution:** The image must be padded with the `input_zp` value itself. 
+Mathematically: `(input_zp - input_zp) * Weight = 0 * Weight = 0`.
+This perfectly mimics the floating-point zero-padding behavior.
+
+### 4.2 The Theory: The "All-Ones" Offset Trick
+As explained in Part 1, the hardware doesn't know about $\beta$ (the input shift). The offset formula is:
+$$ \text{Offset} = \beta \times S_w \times \sum (q_w) $$
+
+In Linear layers, $\sum(q_w)$ is constant. But in Conv2d, at the edges of the image, some weights are multiplied by the padded zeros, meaning they don't contribute to the output. The active sum of weights changes for every single output pixel!
+
+To compute this efficiently without tracking which weights are active per pixel, we use a dummy convolution:
+1. Create an input tensor of ones with the same spatial size as the original input.
+2. Perform standard Conv2d: `F.conv2d(ones, weights)`. 
+3. Because the padding is zero (not one), the output of this dummy convolution is exactly the sum of the active weights at every spatial location!
+4. Multiply this by $\beta \times S_w$ to get the final spatial `Offset` map.
+
+---
+
+### 4.3 The Implementation: Mapping Theory to `_process_conv2d` Code
+Let's look at your exact code in `system.py` and see how the hardware limits, padding, and tiling are handled.
+
+#### A. Loop Structure and Spatial Iteration
+The hardware can only compute 32 outputs (`MAX_PES`) from 32 inputs (`MAX_INPUT_SIZE`) at a time. In Conv2d, the "inputs" to the MAC operation are the channels inside the sliding window.
+
+Your code iterates spatially (`oh`, `ow`), then tiles the output channels (`ob_start`), then iterates over the kernel (`kh`, `kw`), and finally tiles the input channels (`ib_start`).
+
+```python
+# Spatial iteration: moving the sliding window across the image
+for oh in range(Hout):
+    for ow in range(Wout):
+        
+        # Output Channel Tiling (Max 32 PEs at a time)
+        for ob_start in range(0, out_channels, HWConfig.MAX_PES):
+            ob_size = min(out_channels - ob_start, HWConfig.MAX_PES)
+            
+            # Load the quantized bias for this specific set of output channels
+            bias_tile = bias_int[ob_start:ob_start+ob_size].cpu().numpy()
+            await self.driver.bias_setup(bias_tile, ob_size)
+            
+            # Kernel iteration: sliding window is made of Kh x Kw x Cin pixels
+            for kh in range(Kh):
+                ih = oh * stride[0] + kh * dilation[0] - padding[0]
+                for kw in range(Kw):
+                    iw = ow * stride[1] + kw * dilation[1] - padding[1]
+```
+
+#### B. Handling Zero-Point Padding in Hardware
+Inside the kernel loop, you must check if the current window pixel falls outside the original image boundaries. If it does, you don't fetch from memory; you send `input_zp` directly to the hardware.
+
+```python
+                    if ih < 0 or ih >= H or iw < 0 or iw >= W:
+                        # PADDING REGION: 
+                        # We feed input_zp to the hardware.
+                        # Hardware computes: (input_zp - input_zp) * weight = 0.
+                        for ib_start in range(0, input_channel_group, HWConfig.MAX_INPUT_SIZE):
+                            ib_size = min(input_channel_group - ib_start, HWConfig.MAX_INPUT_SIZE)
+                            
+                            input_tile = np.full(ib_size, input_zp, dtype=np.uint8)
+                            weight_tile = q_weight_i8[ob_start:ob_start+ob_size, ib_start:ib_start+ib_size, kh, kw].cpu().numpy()
+                            
+                            await self.driver.hw_setup(input_tile, weight_tile, input_zp, ib_size, ob_size)
+```
+
+#### C. Handling Groups and Input Channel Tiling
+If `groups > 1`, not all output channels look at all input channels. Output channels in group `g` only look at input channels belonging to group `g`. Your code correctly calculates the starting input channel based on the current output block.
+
+```python
+                    else:
+                        # VALID IMAGE REGION:
+                        # Fetch actual quantized data from memory.
+                        for ib_start in range(0, input_channel_group, HWConfig.MAX_INPUT_SIZE):
+                            ib_size = min(input_channel_group - ib_start, HWConfig.MAX_INPUT_SIZE)
+                            
+                            # Group calculation: map output channels to their respective input channels
+                            g = ob_start // (out_channels // groups)
+                            in_channel_start = g * input_channel_group + ib_start
+                            
+                            # Extract the 1D vector of inputs for this specific pixel and channel group
+                            input_tile = q_input_u8[n, in_channel_start:in_channel_start+ib_size, ih, iw].view(-1).cpu().numpy()
+                            weight_tile = q_weight_i8[ob_start:ob_start+ob_size, ib_start:ib_start+ib_size, kh, kw].cpu().numpy()
+                            
+                            await self.driver.hw_setup(input_tile, weight_tile, input_zp, ib_size, ob_size)
+```
+
+#### D. Accumulation and The All-Ones Offset Code
+After all kernel elements and input channels for an output pixel are processed, the hardware's internal accumulator holds the raw integer result. We read it, and in Python, we apply the `alpha` scale and the spatial `Offset` map (calculated via the All-Ones trick).
+
+```python
+            # Read the 32-bit integer accumulator from hardware
+            out_tile = await self.driver.read_output(ob_size)
+            acc_out[n, ob_start:ob_start+ob_size, oh, ow] = torch.from_numpy(out_tile)
+
+# --- AFTER ALL LOOPS FINISH ---
+
+# 1. Calculate the spatial offset map using the All-Ones trick
+valid_input = torch.ones((1, input_channels, H, W), dtype=torch.float32)
+# This dummy convolution outputs the exact sum of active weights at each pixel
+offset = F.conv2d(valid_input, q_weight_i8.float(), None, stride, padding, dilation, groups)
+# Multiply by (beta * scale) to complete the offset math
+offset = offset * (layer.qact.beta * scale).view(1, -1, 1, 1)
+
+# 2. Final Dequantization: apply alpha and offset
+self.output = acc_out.float() * alpha + offset
+```
