@@ -1,4 +1,17 @@
 # documentation.md
-temp/temp.log
-temp/temp.md
-temp/temp.py
+
+temp/*
+!temp/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+
+# Cocotb / Verilator Build outputs
+build/*
+!build/.gitkeep
+
+# Waveforms and logs
+*.fst
+*.vcd
+# results.xml

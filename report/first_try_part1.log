@@ -1,0 +1,390 @@
+rm -f results.xml
+"make" -f makefile results.xml
+make[1]: Entering directory '/mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10'
+/usr/local/bin/verilator -cc --exe -Mdir build --top-module cluster_wrapper -Ihardware/include --timescale 1ns/1ps --vpi --public-flat-rw --prefix Vtop -o Vtop -LDFLAGS "-Wl,-rpath,/home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotb/libs -L/home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotb/libs -lcocotbvpi_verilator" --trace --timing hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0.v hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0_S00_AXI.v hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0.v hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0_S00_AXI.v hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0.v hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0_S00_AXI.v hardware/src/Cluster/cluster_ctrl.v hardware/src/Cluster/cluster_dp.v hardware/src/Cluster/cluster_top.v hardware/src/Cluster-wrapper/cluster_wrapper.v hardware/src/utils/bram_sp.v hardware/src/utils/mull_add.v /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotb/share/lib/verilator/verilator.cpp
+%Warning-ASCRANGE: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0_S00_AXI.v:73:14: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                                      : ... note: In instance 'cluster_wrapper.AXI_REG_ARRAY.Axi4_register_array_v1_0_S00_AXI_inst'
+   73 |   input wire [C_S_AXI_AWUSER_WIDTH-1 : 0] S_AXI_AWUSER,
+      |              ^
+                   ... For warning description see https://verilator.org/warn/ASCRANGE?v=5.050
+                   ... Use "/* verilator lint_off ASCRANGE */" and lint_on around source to disable this message.
+%Warning-ASCRANGE: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0_S00_AXI.v:92:14: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                                      : ... note: In instance 'cluster_wrapper.AXI_REG_ARRAY.Axi4_register_array_v1_0_S00_AXI_inst'
+   92 |   input wire [C_S_AXI_WUSER_WIDTH-1 : 0] S_AXI_WUSER,
+      |              ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0_S00_AXI.v:106:15: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                                       : ... note: In instance 'cluster_wrapper.AXI_REG_ARRAY.Axi4_register_array_v1_0_S00_AXI_inst'
+  106 |   output wire [C_S_AXI_BUSER_WIDTH-1 : 0] S_AXI_BUSER,
+      |               ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0_S00_AXI.v:143:14: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                                       : ... note: In instance 'cluster_wrapper.AXI_REG_ARRAY.Axi4_register_array_v1_0_S00_AXI_inst'
+  143 |   input wire [C_S_AXI_ARUSER_WIDTH-1 : 0] S_AXI_ARUSER,
+      |              ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0_S00_AXI.v:164:15: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                                       : ... note: In instance 'cluster_wrapper.AXI_REG_ARRAY.Axi4_register_array_v1_0_S00_AXI_inst'
+  164 |   output wire [C_S_AXI_RUSER_WIDTH-1 : 0] S_AXI_RUSER,
+      |               ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0_S00_AXI.v:178:6: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                                      : ... note: In instance 'cluster_wrapper.AXI_REG_ARRAY.Axi4_register_array_v1_0_S00_AXI_inst'
+  178 |  reg [C_S_AXI_BUSER_WIDTH-1 : 0]  axi_buser;
+      |      ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0_S00_AXI.v:185:6: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                                      : ... note: In instance 'cluster_wrapper.AXI_REG_ARRAY.Axi4_register_array_v1_0_S00_AXI_inst'
+  185 |  reg [C_S_AXI_RUSER_WIDTH-1 : 0]  axi_ruser;
+      |      ^
+%Warning-WIDTHEXPAND: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0_S00_AXI.v:247:36: Operator AND expects 32 bits on the LHS, but LHS's VARREF 'axi_awaddr' generates 7 bits.
+                                                                                                          : ... note: In instance 'cluster_wrapper.AXI_REG_ARRAY.Axi4_register_array_v1_0_S00_AXI_inst'
+  247 |  assign  aw_wrap_en = ((axi_awaddr & aw_wrap_size) == aw_wrap_size)? 1'b1: 1'b0;
+      |                                    ^
+                      ... For warning description see https://verilator.org/warn/WIDTHEXPAND?v=5.050
+                      ... Use "/* verilator lint_off WIDTHEXPAND */" and lint_on around source to disable this message.
+%Warning-WIDTHEXPAND: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0_S00_AXI.v:248:36: Operator AND expects 32 bits on the LHS, but LHS's VARREF 'axi_araddr' generates 7 bits.
+                                                                                                          : ... note: In instance 'cluster_wrapper.AXI_REG_ARRAY.Axi4_register_array_v1_0_S00_AXI_inst'
+  248 |  assign  ar_wrap_en = ((axi_araddr & ar_wrap_size) == ar_wrap_size)? 1'b1: 1'b0;
+      |                                    ^
+%Warning-WIDTHEXPAND: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0_S00_AXI.v:333:46: Operator SUB expects 32 bits on the LHS, but LHS's VARREF 'axi_awaddr' generates 7 bits.
+                                                                                                          : ... note: In instance 'cluster_wrapper.AXI_REG_ARRAY.Axi4_register_array_v1_0_S00_AXI_inst'
+  333 |                    axi_awaddr <= (axi_awaddr - aw_wrap_size); 
+      |                                              ^
+%Warning-WIDTHTRUNC: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0_S00_AXI.v:333:31: Operator ASSIGNDLY expects 7 bits on the Assign RHS, but Assign RHS's SUB generates 32 bits.
+                                                                                                         : ... note: In instance 'cluster_wrapper.AXI_REG_ARRAY.Axi4_register_array_v1_0_S00_AXI_inst'
+  333 |                    axi_awaddr <= (axi_awaddr - aw_wrap_size); 
+      |                               ^~
+                     ... For warning description see https://verilator.org/warn/WIDTHTRUNC?v=5.050
+                     ... Use "/* verilator lint_off WIDTHTRUNC */" and lint_on around source to disable this message.
+%Warning-WIDTHEXPAND: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0_S00_AXI.v:342:76: Operator ADD expects 32 or 7 bits on the LHS, but LHS's SEL generates 5 bits.
+                                                                                                          : ... note: In instance 'cluster_wrapper.AXI_REG_ARRAY.Axi4_register_array_v1_0_S00_AXI_inst'
+  342 |                  axi_awaddr <= axi_awaddr[C_S_AXI_ADDR_WIDTH - 1:ADDR_LSB] + 1;
+      |                                                                            ^
+%Warning-WIDTHEXPAND: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0_S00_AXI.v:494:46: Operator SUB expects 32 bits on the LHS, but LHS's VARREF 'axi_araddr' generates 7 bits.
+                                                                                                          : ... note: In instance 'cluster_wrapper.AXI_REG_ARRAY.Axi4_register_array_v1_0_S00_AXI_inst'
+  494 |                    axi_araddr <= (axi_araddr - ar_wrap_size); 
+      |                                              ^
+%Warning-WIDTHTRUNC: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0_S00_AXI.v:494:31: Operator ASSIGNDLY expects 7 bits on the Assign RHS, but Assign RHS's SUB generates 32 bits.
+                                                                                                         : ... note: In instance 'cluster_wrapper.AXI_REG_ARRAY.Axi4_register_array_v1_0_S00_AXI_inst'
+  494 |                    axi_araddr <= (axi_araddr - ar_wrap_size); 
+      |                               ^~
+%Warning-WIDTHEXPAND: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0_S00_AXI.v:504:75: Operator ADD expects 32 or 7 bits on the LHS, but LHS's SEL generates 5 bits.
+                                                                                                          : ... note: In instance 'cluster_wrapper.AXI_REG_ARRAY.Axi4_register_array_v1_0_S00_AXI_inst'
+  504 |                  axi_araddr <= axi_araddr[C_S_AXI_ADDR_WIDTH - 1:ADDR_LSB]+1;
+      |                                                                           ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0_S00_AXI.v:80:14: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                                             : ... note: In instance 'cluster_wrapper.AXI_INPUT_WEIGHT.Axi4_weight_brams_v1_0_S00_AXI_inst'
+   80 |   input wire [C_S_AXI_AWUSER_WIDTH-1 : 0] S_AXI_AWUSER,
+      |              ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0_S00_AXI.v:99:14: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                                             : ... note: In instance 'cluster_wrapper.AXI_INPUT_WEIGHT.Axi4_weight_brams_v1_0_S00_AXI_inst'
+   99 |   input wire [C_S_AXI_WUSER_WIDTH-1 : 0] S_AXI_WUSER,
+      |              ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0_S00_AXI.v:113:15: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                                              : ... note: In instance 'cluster_wrapper.AXI_INPUT_WEIGHT.Axi4_weight_brams_v1_0_S00_AXI_inst'
+  113 |   output wire [C_S_AXI_BUSER_WIDTH-1 : 0] S_AXI_BUSER,
+      |               ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0_S00_AXI.v:150:14: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                                              : ... note: In instance 'cluster_wrapper.AXI_INPUT_WEIGHT.Axi4_weight_brams_v1_0_S00_AXI_inst'
+  150 |   input wire [C_S_AXI_ARUSER_WIDTH-1 : 0] S_AXI_ARUSER,
+      |              ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0_S00_AXI.v:171:15: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                                              : ... note: In instance 'cluster_wrapper.AXI_INPUT_WEIGHT.Axi4_weight_brams_v1_0_S00_AXI_inst'
+  171 |   output wire [C_S_AXI_RUSER_WIDTH-1 : 0] S_AXI_RUSER,
+      |               ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0_S00_AXI.v:185:6: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                                             : ... note: In instance 'cluster_wrapper.AXI_INPUT_WEIGHT.Axi4_weight_brams_v1_0_S00_AXI_inst'
+  185 |  reg [C_S_AXI_BUSER_WIDTH-1 : 0]  axi_buser;
+      |      ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0_S00_AXI.v:192:6: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                                             : ... note: In instance 'cluster_wrapper.AXI_INPUT_WEIGHT.Axi4_weight_brams_v1_0_S00_AXI_inst'
+  192 |  reg [C_S_AXI_RUSER_WIDTH-1 : 0]  axi_ruser;
+      |      ^
+%Warning-WIDTHEXPAND: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0_S00_AXI.v:253:36: Operator AND expects 32 bits on the LHS, but LHS's VARREF 'axi_awaddr' generates 11 bits.
+                                                                                                                 : ... note: In instance 'cluster_wrapper.AXI_INPUT_WEIGHT.Axi4_weight_brams_v1_0_S00_AXI_inst'
+  253 |  assign  aw_wrap_en = ((axi_awaddr & aw_wrap_size) == aw_wrap_size)? 1'b1: 1'b0;
+      |                                    ^
+%Warning-WIDTHEXPAND: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0_S00_AXI.v:254:36: Operator AND expects 32 bits on the LHS, but LHS's VARREF 'axi_araddr' generates 11 bits.
+                                                                                                                 : ... note: In instance 'cluster_wrapper.AXI_INPUT_WEIGHT.Axi4_weight_brams_v1_0_S00_AXI_inst'
+  254 |  assign  ar_wrap_en = ((axi_araddr & ar_wrap_size) == ar_wrap_size)? 1'b1: 1'b0;
+      |                                    ^
+%Warning-WIDTHEXPAND: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0_S00_AXI.v:339:46: Operator SUB expects 32 bits on the LHS, but LHS's VARREF 'axi_awaddr' generates 11 bits.
+                                                                                                                 : ... note: In instance 'cluster_wrapper.AXI_INPUT_WEIGHT.Axi4_weight_brams_v1_0_S00_AXI_inst'
+  339 |                    axi_awaddr <= (axi_awaddr - aw_wrap_size); 
+      |                                              ^
+%Warning-WIDTHTRUNC: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0_S00_AXI.v:339:31: Operator ASSIGNDLY expects 11 bits on the Assign RHS, but Assign RHS's SUB generates 32 bits.
+                                                                                                                : ... note: In instance 'cluster_wrapper.AXI_INPUT_WEIGHT.Axi4_weight_brams_v1_0_S00_AXI_inst'
+  339 |                    axi_awaddr <= (axi_awaddr - aw_wrap_size); 
+      |                               ^~
+%Warning-WIDTHEXPAND: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0_S00_AXI.v:348:76: Operator ADD expects 32 or 11 bits on the LHS, but LHS's SEL generates 9 bits.
+                                                                                                                 : ... note: In instance 'cluster_wrapper.AXI_INPUT_WEIGHT.Axi4_weight_brams_v1_0_S00_AXI_inst'
+  348 |                  axi_awaddr <= axi_awaddr[C_S_AXI_ADDR_WIDTH - 1:ADDR_LSB] + 1;
+      |                                                                            ^
+%Warning-WIDTHEXPAND: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0_S00_AXI.v:500:46: Operator SUB expects 32 bits on the LHS, but LHS's VARREF 'axi_araddr' generates 11 bits.
+                                                                                                                 : ... note: In instance 'cluster_wrapper.AXI_INPUT_WEIGHT.Axi4_weight_brams_v1_0_S00_AXI_inst'
+  500 |                    axi_araddr <= (axi_araddr - ar_wrap_size); 
+      |                                              ^
+%Warning-WIDTHTRUNC: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0_S00_AXI.v:500:31: Operator ASSIGNDLY expects 11 bits on the Assign RHS, but Assign RHS's SUB generates 32 bits.
+                                                                                                                : ... note: In instance 'cluster_wrapper.AXI_INPUT_WEIGHT.Axi4_weight_brams_v1_0_S00_AXI_inst'
+  500 |                    axi_araddr <= (axi_araddr - ar_wrap_size); 
+      |                               ^~
+%Warning-WIDTHEXPAND: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0_S00_AXI.v:510:75: Operator ADD expects 32 or 11 bits on the LHS, but LHS's SEL generates 9 bits.
+                                                                                                                 : ... note: In instance 'cluster_wrapper.AXI_INPUT_WEIGHT.Axi4_weight_brams_v1_0_S00_AXI_inst'
+  510 |                  axi_araddr <= axi_araddr[C_S_AXI_ADDR_WIDTH - 1:ADDR_LSB]+1;
+      |                                                                           ^
+%Warning-WIDTHTRUNC: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0_S00_AXI.v:585:57: Bit extraction of array[1055:0] requires 11 bit index, not 13 bits.
+                                                                                                                : ... note: In instance 'cluster_wrapper.AXI_INPUT_WEIGHT.Axi4_weight_brams_v1_0_S00_AXI_inst'
+  585 |      mem_data_out[(mem_byte_index*8+7) -: 8] <= byte_ram[{mem_address,mem_byte_index[1:0]}];
+      |                                                         ^
+%Warning-WIDTHEXPAND: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0_S00_AXI.v:646:26: Bit extraction of array[1055:0] requires 11 bit index, not 5 bits.
+                                                                                                                 : ... note: In instance 'cluster_wrapper.AXI_INPUT_WEIGHT.Axi4_weight_brams_v1_0_S00_AXI_inst'
+  646 |    input_data <= byte_ram[input_weight_address];
+      |                          ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0_S00_AXI.v:74:14: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                          : ... note: In instance 'cluster_wrapper.AXI_CONFIG.Axi4_config_cluster_v1_0_S00_AXI_inst'
+   74 |   input wire [C_S_AXI_AWUSER_WIDTH-1 : 0] S_AXI_AWUSER,
+      |              ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0_S00_AXI.v:93:14: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                          : ... note: In instance 'cluster_wrapper.AXI_CONFIG.Axi4_config_cluster_v1_0_S00_AXI_inst'
+   93 |   input wire [C_S_AXI_WUSER_WIDTH-1 : 0] S_AXI_WUSER,
+      |              ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0_S00_AXI.v:107:15: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                           : ... note: In instance 'cluster_wrapper.AXI_CONFIG.Axi4_config_cluster_v1_0_S00_AXI_inst'
+  107 |   output wire [C_S_AXI_BUSER_WIDTH-1 : 0] S_AXI_BUSER,
+      |               ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0_S00_AXI.v:144:14: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                           : ... note: In instance 'cluster_wrapper.AXI_CONFIG.Axi4_config_cluster_v1_0_S00_AXI_inst'
+  144 |   input wire [C_S_AXI_ARUSER_WIDTH-1 : 0] S_AXI_ARUSER,
+      |              ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0_S00_AXI.v:165:15: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                           : ... note: In instance 'cluster_wrapper.AXI_CONFIG.Axi4_config_cluster_v1_0_S00_AXI_inst'
+  165 |   output wire [C_S_AXI_RUSER_WIDTH-1 : 0] S_AXI_RUSER,
+      |               ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0_S00_AXI.v:179:6: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                          : ... note: In instance 'cluster_wrapper.AXI_CONFIG.Axi4_config_cluster_v1_0_S00_AXI_inst'
+  179 |  reg [C_S_AXI_BUSER_WIDTH-1 : 0]  axi_buser;
+      |      ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0_S00_AXI.v:186:6: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                          : ... note: In instance 'cluster_wrapper.AXI_CONFIG.Axi4_config_cluster_v1_0_S00_AXI_inst'
+  186 |  reg [C_S_AXI_RUSER_WIDTH-1 : 0]  axi_ruser;
+      |      ^
+%Warning-WIDTHEXPAND: hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0_S00_AXI.v:245:36: Operator AND expects 32 bits on the LHS, but LHS's VARREF 'axi_awaddr' generates 3 bits.
+                                                                                              : ... note: In instance 'cluster_wrapper.AXI_CONFIG.Axi4_config_cluster_v1_0_S00_AXI_inst'
+  245 |  assign  aw_wrap_en = ((axi_awaddr & aw_wrap_size) == aw_wrap_size)? 1'b1: 1'b0;
+      |                                    ^
+%Warning-WIDTHEXPAND: hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0_S00_AXI.v:246:36: Operator AND expects 32 bits on the LHS, but LHS's VARREF 'axi_araddr' generates 3 bits.
+                                                                                              : ... note: In instance 'cluster_wrapper.AXI_CONFIG.Axi4_config_cluster_v1_0_S00_AXI_inst'
+  246 |  assign  ar_wrap_en = ((axi_araddr & ar_wrap_size) == ar_wrap_size)? 1'b1: 1'b0;
+      |                                    ^
+%Warning-WIDTHEXPAND: hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0_S00_AXI.v:331:46: Operator SUB expects 32 bits on the LHS, but LHS's VARREF 'axi_awaddr' generates 3 bits.
+                                                                                              : ... note: In instance 'cluster_wrapper.AXI_CONFIG.Axi4_config_cluster_v1_0_S00_AXI_inst'
+  331 |                    axi_awaddr <= (axi_awaddr - aw_wrap_size); 
+      |                                              ^
+%Warning-WIDTHTRUNC: hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0_S00_AXI.v:331:31: Operator ASSIGNDLY expects 3 bits on the Assign RHS, but Assign RHS's SUB generates 32 bits.
+                                                                                             : ... note: In instance 'cluster_wrapper.AXI_CONFIG.Axi4_config_cluster_v1_0_S00_AXI_inst'
+  331 |                    axi_awaddr <= (axi_awaddr - aw_wrap_size); 
+      |                               ^~
+%Warning-WIDTHEXPAND: hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0_S00_AXI.v:492:46: Operator SUB expects 32 bits on the LHS, but LHS's VARREF 'axi_araddr' generates 3 bits.
+                                                                                              : ... note: In instance 'cluster_wrapper.AXI_CONFIG.Axi4_config_cluster_v1_0_S00_AXI_inst'
+  492 |                    axi_araddr <= (axi_araddr - ar_wrap_size); 
+      |                                              ^
+%Warning-WIDTHTRUNC: hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0_S00_AXI.v:492:31: Operator ASSIGNDLY expects 3 bits on the Assign RHS, but Assign RHS's SUB generates 32 bits.
+                                                                                             : ... note: In instance 'cluster_wrapper.AXI_CONFIG.Axi4_config_cluster_v1_0_S00_AXI_inst'
+  492 |                    axi_araddr <= (axi_araddr - ar_wrap_size); 
+      |                               ^~
+%Warning-WIDTHEXPAND: hardware/src/Cluster/cluster_dp.v:52:23: Operator LT expects 32 bits on the LHS, but LHS's VARREF 'n_i' generates 6 bits.
+                                                             : ... note: In instance 'cluster_wrapper.CTOP.MDP'
+   52 |     for (n_i = 0; n_i < MAX_PES; n_i = n_i +1) begin
+      |                       ^
+%Warning-WIDTHTRUNC: hardware/src/Cluster/cluster_dp.v:53:15: Bit extraction of array[31:0] requires 5 bit index, not 6 bits.
+                                                            : ... note: In instance 'cluster_wrapper.CTOP.MDP'
+   53 |         ra_out[n_i] = register_array[(n_i) * PE_D_W +: PE_D_W];
+      |               ^
+%Warning-WIDTHTRUNC: hardware/src/Cluster/cluster_dp.v:54:52: Bit extraction of array[31:0] requires 5 bit index, not 6 bits.
+                                                            : ... note: In instance 'cluster_wrapper.CTOP.MDP'
+   54 |         ra_in_acc[(n_i) * PE_D_W +: PE_D_W] = ra_in[n_i];
+      |                                                    ^
+%Warning-WIDTHTRUNC: hardware/src/Cluster/cluster_dp.v:55:22: Bit extraction of array[31:0] requires 5 bit index, not 6 bits.
+                                                            : ... note: In instance 'cluster_wrapper.CTOP.MDP'
+   55 |         weight_data_i[n_i] = weight_data[(n_i) * WEIGHT_MEM_D_W +: WEIGHT_MEM_D_W];
+      |                      ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0.v:51:14: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                              : ... note: In instance 'cluster_wrapper.AXI_REG_ARRAY'
+   51 |   input wire [C_S00_AXI_AWUSER_WIDTH-1 : 0] s00_axi_awuser,
+      |              ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0.v:57:14: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                              : ... note: In instance 'cluster_wrapper.AXI_REG_ARRAY'
+   57 |   input wire [C_S00_AXI_WUSER_WIDTH-1 : 0] s00_axi_wuser,
+      |              ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0.v:62:15: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                              : ... note: In instance 'cluster_wrapper.AXI_REG_ARRAY'
+   62 |   output wire [C_S00_AXI_BUSER_WIDTH-1 : 0] s00_axi_buser,
+      |               ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0.v:75:14: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                              : ... note: In instance 'cluster_wrapper.AXI_REG_ARRAY'
+   75 |   input wire [C_S00_AXI_ARUSER_WIDTH-1 : 0] s00_axi_aruser,
+      |              ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0.v:82:15: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                              : ... note: In instance 'cluster_wrapper.AXI_REG_ARRAY'
+   82 |   output wire [C_S00_AXI_RUSER_WIDTH-1 : 0] s00_axi_ruser,
+      |               ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0.v:58:14: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                                     : ... note: In instance 'cluster_wrapper.AXI_INPUT_WEIGHT'
+   58 |   input wire [C_S00_AXI_AWUSER_WIDTH-1 : 0] s00_axi_awuser,
+      |              ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0.v:64:14: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                                     : ... note: In instance 'cluster_wrapper.AXI_INPUT_WEIGHT'
+   64 |   input wire [C_S00_AXI_WUSER_WIDTH-1 : 0] s00_axi_wuser,
+      |              ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0.v:69:15: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                                     : ... note: In instance 'cluster_wrapper.AXI_INPUT_WEIGHT'
+   69 |   output wire [C_S00_AXI_BUSER_WIDTH-1 : 0] s00_axi_buser,
+      |               ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0.v:82:14: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                                     : ... note: In instance 'cluster_wrapper.AXI_INPUT_WEIGHT'
+   82 |   input wire [C_S00_AXI_ARUSER_WIDTH-1 : 0] s00_axi_aruser,
+      |              ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0.v:89:15: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                                     : ... note: In instance 'cluster_wrapper.AXI_INPUT_WEIGHT'
+   89 |   output wire [C_S00_AXI_RUSER_WIDTH-1 : 0] s00_axi_ruser,
+      |               ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0.v:53:14: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                  : ... note: In instance 'cluster_wrapper.AXI_CONFIG'
+   53 |   input wire [C_S00_AXI_AWUSER_WIDTH-1 : 0] s00_axi_awuser,
+      |              ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0.v:59:14: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                  : ... note: In instance 'cluster_wrapper.AXI_CONFIG'
+   59 |   input wire [C_S00_AXI_WUSER_WIDTH-1 : 0] s00_axi_wuser,
+      |              ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0.v:64:15: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                  : ... note: In instance 'cluster_wrapper.AXI_CONFIG'
+   64 |   output wire [C_S00_AXI_BUSER_WIDTH-1 : 0] s00_axi_buser,
+      |               ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0.v:77:14: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                  : ... note: In instance 'cluster_wrapper.AXI_CONFIG'
+   77 |   input wire [C_S00_AXI_ARUSER_WIDTH-1 : 0] s00_axi_aruser,
+      |              ^
+%Warning-ASCRANGE: hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0.v:84:15: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                                  : ... note: In instance 'cluster_wrapper.AXI_CONFIG'
+   84 |   output wire [C_S00_AXI_RUSER_WIDTH-1 : 0] s00_axi_ruser,
+      |               ^
+%Warning-ASCRANGE: hardware/src/Cluster-wrapper/cluster_wrapper.v:78:16: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                       : ... note: In instance 'cluster_wrapper'
+   78 |     input wire [C_S00_AXI_AWUSER_WIDTH-1 : 0] s00_axi_awuser,
+      |                ^
+%Warning-ASCRANGE: hardware/src/Cluster-wrapper/cluster_wrapper.v:84:16: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                       : ... note: In instance 'cluster_wrapper'
+   84 |     input wire [C_S00_AXI_WUSER_WIDTH-1 : 0] s00_axi_wuser,
+      |                ^
+%Warning-ASCRANGE: hardware/src/Cluster-wrapper/cluster_wrapper.v:89:17: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                       : ... note: In instance 'cluster_wrapper'
+   89 |     output wire [C_S00_AXI_BUSER_WIDTH-1 : 0] s00_axi_buser,
+      |                 ^
+%Warning-ASCRANGE: hardware/src/Cluster-wrapper/cluster_wrapper.v:102:16: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                        : ... note: In instance 'cluster_wrapper'
+  102 |     input wire [C_S00_AXI_ARUSER_WIDTH-1 : 0] s00_axi_aruser,
+      |                ^
+%Warning-ASCRANGE: hardware/src/Cluster-wrapper/cluster_wrapper.v:109:17: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                        : ... note: In instance 'cluster_wrapper'
+  109 |     output wire [C_S00_AXI_RUSER_WIDTH-1 : 0] s00_axi_ruser,
+      |                 ^
+%Warning-ASCRANGE: hardware/src/Cluster-wrapper/cluster_wrapper.v:125:16: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                        : ... note: In instance 'cluster_wrapper'
+  125 |     input wire [C_S01_AXI_AWUSER_WIDTH-1 : 0] s01_axi_awuser,
+      |                ^
+%Warning-ASCRANGE: hardware/src/Cluster-wrapper/cluster_wrapper.v:131:16: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                        : ... note: In instance 'cluster_wrapper'
+  131 |     input wire [C_S01_AXI_WUSER_WIDTH-1 : 0] s01_axi_wuser,
+      |                ^
+%Warning-ASCRANGE: hardware/src/Cluster-wrapper/cluster_wrapper.v:136:17: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                        : ... note: In instance 'cluster_wrapper'
+  136 |     output wire [C_S01_AXI_BUSER_WIDTH-1 : 0] s01_axi_buser,
+      |                 ^
+%Warning-ASCRANGE: hardware/src/Cluster-wrapper/cluster_wrapper.v:149:16: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                        : ... note: In instance 'cluster_wrapper'
+  149 |     input wire [C_S01_AXI_ARUSER_WIDTH-1 : 0] s01_axi_aruser,
+      |                ^
+%Warning-ASCRANGE: hardware/src/Cluster-wrapper/cluster_wrapper.v:156:17: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                        : ... note: In instance 'cluster_wrapper'
+  156 |     output wire [C_S01_AXI_RUSER_WIDTH-1 : 0] s01_axi_ruser,
+      |                 ^
+%Warning-ASCRANGE: hardware/src/Cluster-wrapper/cluster_wrapper.v:173:16: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                        : ... note: In instance 'cluster_wrapper'
+  173 |     input wire [C_S02_AXI_AWUSER_WIDTH-1 : 0] s02_axi_awuser,
+      |                ^
+%Warning-ASCRANGE: hardware/src/Cluster-wrapper/cluster_wrapper.v:179:16: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                        : ... note: In instance 'cluster_wrapper'
+  179 |     input wire [C_S02_AXI_WUSER_WIDTH-1 : 0] s02_axi_wuser,
+      |                ^
+%Warning-ASCRANGE: hardware/src/Cluster-wrapper/cluster_wrapper.v:184:17: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                        : ... note: In instance 'cluster_wrapper'
+  184 |     output wire [C_S02_AXI_BUSER_WIDTH-1 : 0] s02_axi_buser,
+      |                 ^
+%Warning-ASCRANGE: hardware/src/Cluster-wrapper/cluster_wrapper.v:197:16: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                        : ... note: In instance 'cluster_wrapper'
+  197 |     input wire [C_S02_AXI_ARUSER_WIDTH-1 : 0] s02_axi_aruser,
+      |                ^
+%Warning-ASCRANGE: hardware/src/Cluster-wrapper/cluster_wrapper.v:204:17: Ascending bit range vector: left < right of bit range: [-1:0]
+                                                                        : ... note: In instance 'cluster_wrapper'
+  204 |     output wire [C_S02_AXI_RUSER_WIDTH-1 : 0] s02_axi_ruser,
+      |                 ^
+%Warning-CASEINCOMPLETE: hardware/src/Cluster/cluster_ctrl.v:31:5: Case values incompletely covered (example pattern 0x2)
+   31 |     case(ps)
+      |     ^~~~
+                         ... For warning description see https://verilator.org/warn/CASEINCOMPLETE?v=5.050
+                         ... Use "/* verilator lint_off CASEINCOMPLETE */" and lint_on around source to disable this message.
+%Warning-CASEINCOMPLETE: hardware/src/Cluster/cluster_ctrl.v:44:5: Case values incompletely covered (example pattern 0x2)
+   44 |     case(ps)
+      |     ^~~~
+%Warning-COMBDLY: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0_S00_AXI.v:579:46: Non-blocking assignment '<=' in combinational logic process
+                                                                                                      : ... This will be executed as a blocking assignment '='!
+  579 |      mem_data_out[(mem_byte_index*8+7) -: 8] <= byte_ram[{mem_address,mem_byte_index[1:0]}];
+      |                                              ^~
+                  ... For warning description see https://verilator.org/warn/COMBDLY?v=5.050
+                  ... Use "/* verilator lint_off COMBDLY */" and lint_on around source to disable this message.
+                  *** See https://verilator.org/warn/COMBDLY?v=5.050 before disabling this,
+                  else you may end up with different sim results.
+%Warning-LATCH: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0_S00_AXI.v:575:4: Latch inferred for signal 'cluster_wrapper.AXI_REG_ARRAY.Axi4_register_array_v1_0_S00_AXI_inst.mem_data_out' (not all control paths of combinational always assign a value)
+                                                                                                   : ... Suggest use of always_latch for intentional latches
+  575 |    always @(*)
+      |    ^~~~~~
+                ... For warning description see https://verilator.org/warn/LATCH?v=5.050
+                ... Use "/* verilator lint_off LATCH */" and lint_on around source to disable this message.
+%Warning-COMBDLY: hardware/src/axi4-interface/register-array/Axi4_register_array_v1_0_S00_AXI.v:594:18: Non-blocking assignment '<=' in combinational logic process
+                                                                                                      : ... This will be executed as a blocking assignment '='!
+  594 |        axi_rdata <= mem_data_out;
+      |                  ^~
+%Warning-COMBDLY: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0_S00_AXI.v:585:46: Non-blocking assignment '<=' in combinational logic process
+                                                                                                             : ... This will be executed as a blocking assignment '='!
+  585 |      mem_data_out[(mem_byte_index*8+7) -: 8] <= byte_ram[{mem_address,mem_byte_index[1:0]}];
+      |                                              ^~
+%Warning-LATCH: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0_S00_AXI.v:581:4: Latch inferred for signal 'cluster_wrapper.AXI_INPUT_WEIGHT.Axi4_weight_brams_v1_0_S00_AXI_inst.mem_data_out' (not all control paths of combinational always assign a value)
+                                                                                                          : ... Suggest use of always_latch for intentional latches
+  581 |    always @(*)
+      |    ^~~~~~
+%Warning-COMBDLY: hardware/src/axi4-interface/input-weight-rams/Axi4_input_weight_brams_v1_0_S00_AXI.v:600:18: Non-blocking assignment '<=' in combinational logic process
+                                                                                                             : ... This will be executed as a blocking assignment '='!
+  600 |        axi_rdata <= mem_data_out;
+      |                  ^~
+%Warning-COMBDLY: hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0_S00_AXI.v:577:46: Non-blocking assignment '<=' in combinational logic process
+                                                                                          : ... This will be executed as a blocking assignment '='!
+  577 |      mem_data_out[(mem_byte_index*8+7) -: 8] <= byte_ram[{mem_address[C_S_AXI_ADDR_WIDTH - 1 : 2],mem_byte_index[1:0]}];
+      |                                              ^~
+%Warning-LATCH: hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0_S00_AXI.v:573:4: Latch inferred for signal 'cluster_wrapper.AXI_CONFIG.Axi4_config_cluster_v1_0_S00_AXI_inst.mem_data_out' (not all control paths of combinational always assign a value)
+                                                                                       : ... Suggest use of always_latch for intentional latches
+  573 |    always @(*)
+      |    ^~~~~~
+%Warning-COMBDLY: hardware/src/axi4-interface/config/Axi4_config_mlp_v1_0_S00_AXI.v:592:18: Non-blocking assignment '<=' in combinational logic process
+                                                                                          : ... This will be executed as a blocking assignment '='!
+  592 |        axi_rdata <= mem_data_out;
+      |                  ^~
+%Warning-UNOPTFLAT: hardware/src/Cluster/cluster_dp.v:40:34: Signal unoptimizable: Circular combinational logic: 'cluster_wrapper.CTOP.MDP.ra_in'
+   40 |     wire signed [PE_D_W - 1 : 0] ra_in [32 - 1:0];
+      |                                  ^~~~~
+                    ... For warning description see https://verilator.org/warn/UNOPTFLAT?v=5.050
+                    ... Use "/* verilator lint_off UNOPTFLAT */" and lint_on around source to disable this message.
+                    hardware/src/Cluster/cluster_dp.v:40:34:      Example path: cluster_wrapper.CTOP.MDP.ra_in
+                    hardware/src/Cluster/cluster_dp.v:50:1:      Example path: ALWAYS
+                    hardware/src/Cluster/cluster_dp.v:42:26:      Example path: cluster_wrapper.CTOP.MDP.ra_out
+                    hardware/src/Cluster/cluster_dp.v:85:21:      Example path: ASSIGNW
+                    hardware/src/Cluster/cluster_dp.v:40:34:      Example path: cluster_wrapper.CTOP.MDP.ra_in
+%Error: Exiting due to 91 warning(s)
+make[1]: *** [/home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotb_tools/makefiles/simulators/Makefile.verilator:61: build/Vtop.mk] Error 1
+make[1]: Leaving directory '/mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10'
+make: *** [/home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotb_tools/makefiles/Makefile.inc:17: sim] Error 2
