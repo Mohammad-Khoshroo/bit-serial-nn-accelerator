@@ -161,8 +161,9 @@ class layer_tiling():
             
             scale = layer._weight_scale()
             alpha = (scale * layer._activation_scale()).view(1, -1)
-                    
-            batch_input_num, in_features = q_input_u8.shape
+            
+            # N: input number in each batch
+            N, in_features = q_input_u8.shape
             out_features = q_weight_i8.shape[0]
             
             if layer.bias is not None:
@@ -171,9 +172,9 @@ class layer_tiling():
                 bias_int = torch.zeros(out_features, dtype=torch.int32)
             
             # acc: accelerator
-            acc_out = torch.zeros((batch_input_num, out_features), dtype=torch.int32)
+            acc_out = torch.zeros((N, out_features), dtype=torch.int32)
             
-            for n in range(batch_input_num):
+            for n in range(N):
             
                 # ob: tile output block
                 # ib: tile input  block
@@ -207,4 +208,81 @@ class layer_tiling():
             
 
             
-    
+    async def _process_conv2d(self, q_input_u8, q_weight_i8, input_zp, input_tensor, layer):
+        
+        # N: input number in each batch
+        # H: input hight 
+        # W: input width
+        # K: kernel
+        # out_channels == filters number
+        N, input_channels, H, W = input_tensor.shape
+        out_channels, input_channel_group, Kh, Kw = q_weight_i8.shape
+        
+        stride = layer.stride
+        padding = layer.padding
+        dilation = layer.dilation
+        groups = layer.groups
+        
+        Hout = (H + 2 * padding[0] - dilation[0] * (Kh - 1) - 1) // stride[0] + 1
+        Wout = (W + 2 * padding[1] - dilation[1] * (Kw - 1) - 1) // stride[1] + 1
+        
+        scale = layer._weight_scale()
+        alpha = (scale * layer._activation_scale()).view(1, -1, 1, 1)
+        
+        if layer.bias is not None:
+            bias_int = (layer.bias / alpha.squeeze()).round().to(torch.int32)
+        else:
+            bias_int = torch.zeros(out_channels, dtype=torch.int32)
+            
+        # acc: accelerator 
+        acc_out = torch.zeros((N, out_channels, Hout, Wout), dtype=torch.int32)
+        
+        for n in range(N):
+            
+            for oh in range(Hout):
+                for ow in range(Wout):
+                    
+                    # ob: tile output block
+                    # ib: tile input  block
+                    for ob_start in range(0, out_channels, HWConfig.MAX_PES):
+                        
+                        ob_size = min(out_channels - ob_start, HWConfig.MAX_PES)
+                        
+                        bias_tile = bias_int[ob_start:ob_start+ob_size].cpu().numpy()
+                        await self.driver.bias_setup(bias_tile, ob_size)
+                        
+                        for kh in range(Kh):
+                            ih = oh * stride[0] + kh * dilation[0] - padding[0]
+                            for kw in range(Kw):
+                                
+                                iw = ow * stride[1] + kw * dilation[1] - padding[1]
+                                
+                                if ih < 0 or ih >= H or iw < 0 or iw >= W:
+                                    for ib_start in range(0, input_channel_group, HWConfig.MAX_INPUT_SIZE):
+                                        ib_size = min(input_channel_group - ib_start, HWConfig.MAX_INPUT_SIZE)
+                                        
+                                        input_tile = np.full(ib_size, input_zp, dtype=np.uint8)
+                                        weight_tile = q_weight_i8[ob_start:ob_start+ob_size, ib_start:ib_start+ib_size, kh, kw].cpu().numpy()
+                                        
+                                        await self.driver.hw_setup(input_tile, weight_tile, input_zp, ib_size, ob_size)
+                                else:
+                                    for ib_start in range(0, input_channel_group, HWConfig.MAX_INPUT_SIZE):
+                                        ib_size = min(input_channel_group - ib_start, HWConfig.MAX_INPUT_SIZE)
+                                        
+                                        g = ob_start // (out_channels // groups)
+                                        in_channel_start = g * input_channel_group + ib_start
+                                        
+                                        input_tile = q_input_u8[n, in_channel_start:in_channel_start+ib_size, ih, iw].view(-1).cpu().numpy()
+                                        weight_tile = q_weight_i8[ob_start:ob_start+ob_size, ib_start:ib_start+ib_size, kh, kw].cpu().numpy()
+                                        
+                                        await self.driver.hw_setup(input_tile, weight_tile, input_zp, ib_size, ob_size)
+                                        
+                        out_tile = await self.driver.read_output(ob_size)
+                        acc_out[n, ob_start:ob_start+ob_size, oh, ow] += torch.from_numpy(out_tile)
+                        
+        
+        valid_input = torch.ones((1, input_channels, H, W), dtype=torch.float32)
+        offset = F.conv2d(valid_input, q_weight_i8.float(), None, stride, padding, dilation, groups)
+        offset = offset * (layer.qact.beta * scale).view(1, -1, 1, 1)
+        
+        self.output = acc_out.float() * alpha + offset

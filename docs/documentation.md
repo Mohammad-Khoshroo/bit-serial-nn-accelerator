@@ -12,6 +12,13 @@ The accelerator is designed to support two fundamental neural network layers:
 *   **Linear Layer (Fully Connected / MLP):** Takes a 1D vector of inputs (e.g., a flattened 28x28 image = 784 pixels), multiplies each input by a corresponding weight, and sums them up to produce an output. This is a standard matrix-vector multiplication.
 *   **Conv2d Layer (Convolutional):** Instead of multiplying the whole image at once, it slides a small 2D window (e.g., 3x3 pixels) across the image. At each step, it multiplies the 9 pixels inside the window by 9 weights and sums them to produce a single output pixel. This preserves spatial relationships in images.
 
+**Conv2d Parameters:**
+The behavior of the sliding window is controlled by four key parameters:
+*   **`stride`:** Determines how many pixels the window jumps at each step. `stride=1` means pixel-by-pixel movement. `stride=2` halves the output image size.
+*   **`padding`:** When the window is at the edge of the image, part of it falls outside. `padding=1` adds a border of zeros around the image so the window can operate fully on edge pixels.
+*   **`dilation`:** Spreads out the pixels *inside* the kernel. `dilation=2` means a 3x3 window covers a 5x5 area by skipping every other pixel. This increases the "receptive field" without adding more weights.
+*   **`groups`:** Splits the input channels and output filters into independent groups. `groups=2` means the first half of the filters only look at the first half of the input channels. This reduces computation. If `groups=1`, every output filter looks at all input channels.
+
 ### 1.3 Quantization (The Shift from Float to Int)
 Computers and FPGAs process integer math much faster and with significantly less power than floating-point math. **Quantization** is the process of mapping continuous floating-point values to discrete 8-bit integers (`int8` or `uint8`).
 
@@ -56,7 +63,7 @@ $$ \text{Float Output} = \underbrace{(S_x \times S_w)}_{\alpha} \times \underbra
 
 Notice the first term: $\alpha \times \sum (q_x \times q_w)$. This is exactly what our hardware computes! The hardware multiplies the integers and sums them. 
 
-Notice the second term: $\beta \times S_w \times \sum (q_w)$. Because the hardware does not know about $\beta$ (the input shift), this term is not computed by the hardware. It must be calculated in Python as the `Offset`. In code, this is `offset = layer.qact.beta * scale * weight_sum`.
+Notice the second term: $\beta \times S_w \times \sum (q_w)$. Because the hardware does not know about $\beta$ (the input shift), this term is not computed by the hardware. It must be calculated in Python as the `Offset`. In Linear layers, this is simply `offset = layer.qact.beta * scale * weight_sum`.
 
 **Step 4: Quantizing the Bias for Hardware**
 Instead of adding the float bias ($b_{float}$) in Python at the end, we want the hardware to do it. The hardware accepts a 32-bit integer bias ($b_{int32}$) and adds it inside the accumulator:
@@ -69,8 +76,22 @@ $$ \text{Float Output} = \alpha \times \sum (q_x \times q_w) + \alpha \times b_{
 For this to equal the original equation ($\alpha \times \sum (q_x \times q_w) + \text{Offset} + b_{float}$), the bias we send to the hardware must be:
 $$ b_{int32} = \text{round}\left( \frac{b_{float}}{\alpha} \right) $$
 
-**Step 5: The Final Dequantization Formula**
-Finally, what remains in Python is just multiplying the hardware output by $\alpha$ and adding the pre-calculated `Offset`:
+**Step 5: The Conv2d Offset Problem & The All-Ones Trick**
+In a Linear layer, $\sum(q_w)$ (the sum of weights) is a single constant because all weights are always used. 
+However, in Conv2d, when the window is at the edges of the image, the `padding` region is effectively zero, meaning some weights are multiplied by zero and do not contribute to the sum. Therefore, the active $\sum(q_w)$ varies for every output pixel!
+
+How do we calculate the sum of active weights for every single output pixel efficiently?
+We use a mathematical trick: we create a dummy input image filled entirely with `1.0` and perform a standard convolution with the weights.
+$$ \text{Dummy Output} = \sum \left( 1.0 \times q_w \right) = \sum_{\text{active}} (q_w) $$
+Because padding is zero (not one), this dummy convolution perfectly outputs the exact sum of active weights for each spatial location. We then multiply this by $\beta \times S_w$ to get a spatial `Offset` map:
+```python
+valid_input = torch.ones((1, Cin, H, W), dtype=torch.float32)
+offset = F.conv2d(valid_input, q_weight_i8.float(), None, stride, padding, dilation, groups)
+offset = offset * (layer.qact.beta * scale).view(1, -1, 1, 1)
+```
+
+**Step 6: The Final Dequantization Formula**
+Finally, what remains in Python is just multiplying the hardware output by $\alpha$ and adding the pre-calculated `Offset` (which is a vector for Linear, or a matrix for Conv2d):
 $$ \text{Float Output} = (\text{Hardware Int32 Output} \times \alpha) + \text{Offset} $$
 
 ### 1.5 Tiling and Scheduling (Hardware Limits)
@@ -167,3 +188,7 @@ done = (eaiot_hal_In32((popenhw_driver.config_base_addr+4)) >> 16) & 0x1;
 read_val = await self.axi_master_config.read(0x04, length=4)
 done = bool(read_val.data[2]) # byte_ram[6] is at index 2 of the 4-byte read
 ```
+
+***
+
+حالا که مستندات کامل شد و کدهای `system.py` هم تایید نهایی شدند، می‌توانیم به سراغ ساخت فایل‌های اجرایی (`testbench.py`, `makefile`, `test_runner.py`) برویم تا پروژه را اجرا کنیم! درخواستتان را بفرمایید.
