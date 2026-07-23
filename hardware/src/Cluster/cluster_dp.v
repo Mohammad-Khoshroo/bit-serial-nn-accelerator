@@ -75,7 +75,8 @@ assign input_weight_address = input_counter_r;
 
 
 wire signed [ 8 : 0] input_signed; 
-assign input_signed = input_data - input_zp;
+assign input_signed = $signed({1'b0, input_data}) - $signed({1'b0, input_zp});
+
 
 genvar k;
 generate
