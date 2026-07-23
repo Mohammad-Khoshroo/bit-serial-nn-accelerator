@@ -1,0 +1,108 @@
+rm -f results.xml
+"make" -f makefile results.xml
+make[1]: Entering directory '/mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10'
+rm -f results.xml
+COCOTB_TEST_MODULES=test_bench COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=cluster_wrapper TOPLEVEL_LANG=verilog \
+         build/Vtop  --trace --timing -Wno-ASCRANGE -Wno-WIDTHEXPAND -Wno-WIDTHTRUNC -Wno-CASEINCOMPLETE -Wno-COMBDLY -Wno-LATCH -Wno-UNOPTFLAT   
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:93   in _embed_init_python              Using Python 3.12.4 interpreter at /usr/bin/python3
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:79   in gpi_print_registered_impl       VPI registered
+     0.00ns INFO     cocotb                             Running on Verilator version 5.050 2026-07-01
+     0.00ns INFO     cocotb                             Seeding Python random module with 1784797237
+     0.00ns INFO     cocotb                             Initialized cocotb v2.0.1 from /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_bench.test_conv2d_layer (1/2)
+                                                            Test QuantConv2d layer with padding and bias against Golden Model.
+     0.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:25: DeprecationWarning: The 'units' argument has been renamed to 'unit'.
+                                                          await cocotb.start(Clock(dut.s00_axi_aclk, axi_duty, units="ps").start()) # pyright: ignore[reportArgumentType]
+     0.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:25: DeprecationWarning: Use ``cocotb.start_soon`` instead.
+                                                          await cocotb.start(Clock(dut.s00_axi_aclk, axi_duty, units="ps").start()) # pyright: ignore[reportArgumentType]
+     0.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:26: DeprecationWarning: The 'units' argument has been renamed to 'unit'.
+                                                          await cocotb.start(Clock(dut.s01_axi_aclk, axi_duty, units="ps").start()) # pyright: ignore[reportArgumentType]
+     0.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:26: DeprecationWarning: Use ``cocotb.start_soon`` instead.
+                                                          await cocotb.start(Clock(dut.s01_axi_aclk, axi_duty, units="ps").start()) # pyright: ignore[reportArgumentType]
+     0.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:27: DeprecationWarning: The 'units' argument has been renamed to 'unit'.
+                                                          await cocotb.start(Clock(dut.s02_axi_aclk, axi_duty, units="ps").start()) # pyright: ignore[reportArgumentType]
+     0.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:27: DeprecationWarning: Use ``cocotb.start_soon`` instead.
+                                                          await cocotb.start(Clock(dut.s02_axi_aclk, axi_duty, units="ps").start()) # pyright: ignore[reportArgumentType]
+     0.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:28: DeprecationWarning: The 'units' argument has been renamed to 'unit'.
+                                                          await cocotb.start(Clock(dut.logic_clk,  logic_duty, units="ps").start()) # pyright: ignore[reportArgumentType]
+     0.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:28: DeprecationWarning: Use ``cocotb.start_soon`` instead.
+                                                          await cocotb.start(Clock(dut.logic_clk,  logic_duty, units="ps").start()) # pyright: ignore[reportArgumentType]
+     0.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:34: DeprecationWarning: The 'units' argument has been renamed to 'unit'.
+                                                          await Timer(100, units="ns") # pyright: ignore[reportArgumentType]
+   100.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:40: DeprecationWarning: The 'units' argument has been renamed to 'unit'.
+                                                          await Timer(200, units="ns") # pyright: ignore[reportArgumentType]
+   300.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:69: DeprecationWarning: The 'units' argument has been renamed to 'unit'.
+                                                          start_time = get_sim_time(units="ns") # pyright: ignore[reportArgumentType]
+   300.00ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/stream.py:120: DeprecationWarning: Use `handle.set(Immediate(...))` or `handle.value = Immediate(...)` instead.
+                                                          self.valid.setimmediatevalue(self._valid_init)
+   300.00ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/stream.py:133: DeprecationWarning: Use `handle.set(Immediate(...))` or `handle.value = Immediate(...)` instead.
+                                                          s.setimmediatevalue(v)
+   300.00ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/stream.py:115: DeprecationWarning: Use `handle.set(Immediate(...))` or `handle.value = Immediate(...)` instead.
+                                                          self.ready.setimmediatevalue(self._ready_init)
+   300.00ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/reset.py:59: DeprecationWarning: Use `signal.value_change` instead.
+                                                          await Edge(reset_signal)
+   300.35ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/axi_master.py:630: DeprecationWarning: The data field will be removed in a future release.
+                                                          cmd.event.set(write_resp)
+   300.35ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/axi_master.py:423: DeprecationWarning: The data field will be removed in a future release.
+                                                          return event.data
+   301.57ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/axi_master.py:1030: DeprecationWarning: The data field will be removed in a future release.
+                                                          cmd.event.set(read_resp)
+   301.57ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/axi_master.py:834: DeprecationWarning: The data field will be removed in a future release.
+                                                          return event.data
+   301.57ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/system.py:89: DeprecationWarning: The 'units' argument has been renamed to 'unit'.
+                                                          await Timer(10, units='ns') # pyright: ignore[reportArgumentType]
+  6851.03ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:74: DeprecationWarning: The 'units' argument has been renamed to 'unit'.
+                                                          end_time = get_sim_time(units="ns") # pyright: ignore[reportArgumentType]
+
+--- Conv2d Golden Output Sample ---
+tensor([-0.1360, -0.1374, -0.1424, -0.1770, -0.2267], grad_fn=<SliceBackward0>)
+--- Conv2d Hardware Output Sample ---
+tensor([-0.1265, -0.1564, -0.2182, -0.1461, -0.1677], grad_fn=<SliceBackward0>)
+  6851.03ns WARNING  ..t_conv2d_layer.test_conv2d_layer Conv2d Hardware output does not match golden output!
+                                                        assert False
+                                                         +  where False = <built-in method allclose of type object at 0x73118d148980>(tensor([[[[-0.1265, -0.1564, -0.2182, -0.1461, -0.1677, -0.2260, -0.0527,\n           -0.2097],\n          [-0.2010, -0....        [ 0.0913,  0.0108,  0.0326,  0.0667,  0.0243,  0.0580,  0.0856,\n            0.0431]]]], grad_fn=<AddBackward0>), tensor([[[[-0.1360, -0.1374, -0.1424, -0.1770, -0.2267, -0.1575, -0.1231,\n           -0.1176],\n          [-0.1715, -0....        [ 0.1344, -0.0246,  0.0163,  0.1008,  0.0155,  0.0410,  0.0547,\n            0.1064]]]], grad_fn=<AddBackward0>), atol=0.001, rtol=0.001)
+                                                         +    where <built-in method allclose of type object at 0x73118d148980> = torch.allclose
+                                                        Traceback (most recent call last):
+                                                          File "/mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py", line 83, in test_conv2d_layer
+                                                            assert torch.allclose(hw_output, golden_output, atol=1e-3, rtol=1e-3), \
+                                                        AssertionError: Conv2d Hardware output does not match golden output!
+                                                        assert False
+                                                         +  where False = <built-in method allclose of type object at 0x73118d148980>(tensor([[[[-0.1265, -0.1564, -0.2182, -0.1461, -0.1677, -0.2260, -0.0527,\n           -0.2097],\n          [-0.2010, -0....        [ 0.0913,  0.0108,  0.0326,  0.0667,  0.0243,  0.0580,  0.0856,\n            0.0431]]]], grad_fn=<AddBackward0>), tensor([[[[-0.1360, -0.1374, -0.1424, -0.1770, -0.2267, -0.1575, -0.1231,\n           -0.1176],\n          [-0.1715, -0....        [ 0.1344, -0.0246,  0.0163,  0.1008,  0.0155,  0.0410,  0.0547,\n            0.1064]]]], grad_fn=<AddBackward0>), atol=0.001, rtol=0.001)
+                                                         +    where <built-in method allclose of type object at 0x73118d148980> = torch.allclose
+  6851.03ns WARNING  cocotb.regression                  test_bench.test_conv2d_layer failed
+  6851.03ns INFO     cocotb.regression                  running test_bench.test_linear_layer (2/2)
+                                                            Test QuantLinear (MLP) layer with bias against Golden Model.
+  7151.03ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:109: DeprecationWarning: The 'units' argument has been renamed to 'unit'.
+                                                          start_time = get_sim_time(units="ns") # pyright: ignore[reportArgumentType]
+  7180.32ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:114: DeprecationWarning: The 'units' argument has been renamed to 'unit'.
+                                                          end_time = get_sim_time(units="ns") # pyright: ignore[reportArgumentType]
+
+--- Linear Golden Output Sample ---
+tensor([ 0.0332, -0.1291, -0.1471,  0.0282, -0.0195], grad_fn=<SliceBackward0>)
+--- Linear Hardware Output Sample ---
+tensor([ 0.0635, -0.1926, -0.0156,  0.0574,  0.0760], grad_fn=<SliceBackward0>)
+  7180.32ns WARNING  ..t_linear_layer.test_linear_layer Linear Hardware output does not match golden output!
+                                                        assert False
+                                                         +  where False = <built-in method allclose of type object at 0x73118d148980>(tensor([[ 0.0635, -0.1926, -0.0156,  0.0574,  0.0760,  0.0377,  0.0773, -0.0734,\n         -0.1410,  0.1251, -0.0641, -...0553,\n         -0.1443,  0.0637,  0.0607,  0.1919,  0.0388,  0.0101, -0.0201, -0.0419]],\n       grad_fn=<AddBackward0>), tensor([[ 0.0332, -0.1291, -0.1471,  0.0282, -0.0195,  0.0127,  0.1803, -0.1040,\n         -0.1255,  0.1092, -0.0228, -...0236,\n          0.0414,  0.0298,  0.2080, -0.0210,  0.1556,  0.1358, -0.1058,  0.0285]],\n       grad_fn=<AddBackward0>), atol=0.001, rtol=0.001)
+                                                         +    where <built-in method allclose of type object at 0x73118d148980> = torch.allclose
+                                                        Traceback (most recent call last):
+                                                          File "/mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py", line 123, in test_linear_layer
+                                                            assert torch.allclose(hw_output, golden_output, atol=1e-3, rtol=1e-3), \
+                                                        AssertionError: Linear Hardware output does not match golden output!
+                                                        assert False
+                                                         +  where False = <built-in method allclose of type object at 0x73118d148980>(tensor([[ 0.0635, -0.1926, -0.0156,  0.0574,  0.0760,  0.0377,  0.0773, -0.0734,\n         -0.1410,  0.1251, -0.0641, -...0553,\n         -0.1443,  0.0637,  0.0607,  0.1919,  0.0388,  0.0101, -0.0201, -0.0419]],\n       grad_fn=<AddBackward0>), tensor([[ 0.0332, -0.1291, -0.1471,  0.0282, -0.0195,  0.0127,  0.1803, -0.1040,\n         -0.1255,  0.1092, -0.0228, -...0236,\n          0.0414,  0.0298,  0.2080, -0.0210,  0.1556,  0.1358, -0.1058,  0.0285]],\n       grad_fn=<AddBackward0>), atol=0.001, rtol=0.001)
+                                                         +    where <built-in method allclose of type object at 0x73118d148980> = torch.allclose
+  7180.32ns WARNING  cocotb.regression                  test_bench.test_linear_layer failed
+  7180.32ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_bench.test_conv2d_layer   FAIL        6851.03          16.68        410.70  **
+                                                        ** test_bench.test_linear_layer   FAIL         329.29           0.64        513.82  **
+                                                        **************************************************************************************
+                                                        ** TESTS=2 PASS=0 FAIL=2 SKIP=0               7180.32          17.33        414.26  **
+                                                        **************************************************************************************
+- :0: Verilog $finish
+make[1]: *** [/home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotb_tools/makefiles/simulators/Makefile.verilator:70: results.xml] Error 2
+make[1]: Leaving directory '/mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10'
+make: *** [/home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotb_tools/makefiles/Makefile.inc:17: sim] Error 2

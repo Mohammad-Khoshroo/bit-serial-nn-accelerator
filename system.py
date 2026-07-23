@@ -101,7 +101,7 @@ class accelerator_driver():
         """
         read_len = HWConfig.MAX_PES * 4  # each output: 4 byte
         read_val = await self.axi_master_ra.read(0x0000, length=read_len)
-        out_data = np.frombuffer(read_val.data, dtype=np.int32)
+        out_data = np.frombuffer(read_val.data, dtype=np.int32).copy()
         return out_data[:o0]
     
     

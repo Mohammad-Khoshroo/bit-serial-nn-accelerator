@@ -14,4 +14,4 @@ build/*
 # Waveforms and logs
 *.fst
 *.vcd
-# results.xml
+results.xml

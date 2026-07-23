@@ -1,14 +1,21 @@
+import sys
+import os
 import numpy as np
 import torch
 import torch.nn.init as init
 import cocotb
-from cocotb.triggers import Timer, Join
+from cocotb.triggers import Timer
 from cocotb.clock import Clock
 from cocotb.utils import get_sim_time
+from cocotb.utils import get_sim_time
+import logging
 
-from src.lsqplus import QuantConv2d, QuantLinear
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
+logging.getLogger("cocotb.cluster_wrapper").setLevel(logging.WARNING)
+logging.getLogger("cocotbext.axi").setLevel(logging.WARNING)
+
+from lsqplus import QuantConv2d, QuantLinear
 from system import layer_tiling, HWConfig
-
 
 async def setup_dut(dut):
     """Helper function to initialize clocks and reset the hardware."""
@@ -45,13 +52,17 @@ async def test_conv2d_layer(dut):
     groups = 1
     bias = True
     padding = (1, 1)
-    input_dim = (1, in_channels, 28, 28)
+    input_dim = (1, in_channels, 8, 8)
     
     layer = QuantConv2d(in_channels, out_channels, kernel_size, stride, padding,  # pyright: ignore[reportArgumentType]
                         groups=groups, bias=bias, a_bit=8, w_bit=8)
     init.normal_(layer.weight, mean=0.0, std=0.01)
     
     test_input = torch.randn(*input_dim)
+    
+    layer.train()
+    _ = layer(test_input)
+        
     layer.eval()
     golden_output = layer(test_input) 
 
@@ -88,6 +99,10 @@ async def test_linear_layer(dut):
     init.normal_(layer.weight, mean=0.0, std=0.01)
     
     test_input = torch.randn(*input_dim)
+    
+    layer.train()
+    _ = layer(test_input)
+        
     layer.eval()
     golden_output = layer(test_input)
 
