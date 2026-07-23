@@ -16,6 +16,8 @@ def test_runner():
     runner.build(
         sources=sources,
         hdl_toplevel="cluster_wrapper",
+        # hdl_toplevel="cluster_wrapper_bit_serial",
+        # hdl_toplevel="cluster_wrapper_bit_sparsity",
         build_dir="build",
         includes=[str(proj_path / "hardware" / "include")],  # For hw_config.vh
         extra_args=["--trace", "--timing"] # pyright: ignore[reportCallIssue]
@@ -23,6 +25,8 @@ def test_runner():
 
     runner.test(
         hdl_toplevel="cluster_wrapper",
+        # hdl_toplevel="cluster_wrapper_bit_serial",
+        # hdl_toplevel="cluster_wrapper_bit_sparsiy",        
         test_module="test_bench",
         test_dir=str(proj_path),
         extra_env={"PYTHONPATH": str(proj_path / "src")}

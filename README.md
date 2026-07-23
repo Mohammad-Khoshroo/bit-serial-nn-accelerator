@@ -19,3 +19,11 @@ make -j$(nproc)
 sudo make install
 verilator --version
 ```
+
+# Test and Run project
+
+first choose the target arch (raw/bit-serial/sparsity-aware) from makefile then:
+```bash
+make clean
+make > terminal.log 2>&1
+```
