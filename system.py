@@ -61,17 +61,11 @@ class accelerator_driver():
         :param i0: num of inputs tile
         :param o0: num of outputs tile
         """
-
-        # write start(1), input_zp, input_num, output_num
-        config_data_0 = (1 << 0) | ((input_zp & 0xFF) << 8) | (((i0 - 1) & 0xFFFF) << 16)
-        await self.axi_master_config.write(0x00, config_data_0.to_bytes(4, 'little'))        
-        config_data_1 = (o0 - 1) & 0xFFFF
-        await self.axi_master_config.write(0x04, config_data_1.to_bytes(4, 'little'))
-
         # write input to block 0
         inp_data = np.zeros(HWConfig.MAX_INPUT_SIZE, dtype=np.uint8)
         inp_data[:i0] = input_tile
         await self.axi_master_iwb.write(0x0000, inp_data.tobytes())
+        
         # write weghts to remain blocks
         w_data = np.zeros((HWConfig.MAX_PES, HWConfig.MAX_INPUT_SIZE), dtype=np.int8)
         w_data[:o0, :i0] = weight_tile
@@ -79,6 +73,11 @@ class accelerator_driver():
             addr = (k + 1) * HWConfig.MAX_INPUT_SIZE
             await self.axi_master_iwb.write(addr, w_data[k].tobytes())
 
+        # write start(1), input_zp, input_num, output_num
+        config_data_1 = (o0 - 1) & 0xFFFF
+        await self.axi_master_config.write(0x04, config_data_1.to_bytes(4, 'little'))
+        config_data_0 = (1 << 0) | ((input_zp & 0xFF) << 8) | (((i0 - 1) & 0xFFFF) << 16)
+        await self.axi_master_config.write(0x00, config_data_0.to_bytes(4, 'little'))        
 
         # wait for done
         # done issue in byte_ram[6][0]
