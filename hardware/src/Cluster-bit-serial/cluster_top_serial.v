@@ -1,11 +1,10 @@
 `include "hw_config.vh"
 
-module cluster_top #(
+module cluster_top_serial #(
     parameter integer MAX_INPUT_SIZE = `MAX_INPUT_SIZE,
     parameter integer INPUT_D_W = `INPUT_D_W,
     parameter integer MAX_PES = `MAX_PES,
     parameter integer PE_D_W = `PE_D_W,
-
     parameter integer CONFIG_SIZE = 8,
     parameter integer BLOCK_NUM = `MAX_PES + 1,
     parameter integer BLOCK_SIZE = `MAX_INPUT_SIZE,
@@ -13,67 +12,57 @@ module cluster_top #(
     parameter integer INPUT_WEIGHT_ADDR_WIDTH = $clog2(MAX_INPUT_SIZE),
     parameter integer WEIGHT_DATA_WIDTH = `WEIGHT_MEM_D_W,
     parameter integer INPUT_DATA_WIDTH = `INPUT_D_W,
-
     parameter integer BYTE_REG_NUM = 128
-
-    
 ) (
     input clk, rstn,
-    // configs
     input [$clog2(MAX_INPUT_SIZE) - 1 : 0] input_num,
     input [$clog2(MAX_PES) - 1 : 0] output_num,
     input relu,
-
     input [`INPUT_ZP_WIDTH-1:0] input_zp,
     input start,
     output done,
     output logic_wen,
-/////////////////////////////////
     output input_weight_ren,
     output [ INPUT_WEIGHT_ADDR_WIDTH - 1 : 0 ] input_weight_address,
     input [ MAX_PES * WEIGHT_DATA_WIDTH - 1 : 0] weight_data,
     input [INPUT_DATA_WIDTH - 1 : 0] input_data,
-/////////////////////////////////////
     output ra_ld_axi,
     output ra_ld_acc,
     output axi_ram_ld,
     output [BYTE_REG_NUM * 8-1:0] ra_in_acc,
     input [BYTE_REG_NUM * 8-1:0] register_array
-
 );
 
 wire input_counter_clr;
 wire input_counter_ld;
 wire input_counter_co;
 
+wire [2:0] bit_index;
+wire is_msb;
+wire is_lsb;
+wire is_valid;
 
-
-
-cluster_dp MDP(
+cluster_dp_serial MDP(
     .clk(clk),
     .rstn(rstn),
     .input_size(input_num),
     .output_size(output_num),
-
     .input_data(input_data),
     .weight_data(weight_data),
-
     .input_weight_address(input_weight_address),
     .input_zp(input_zp),
-
+    .bit_index(bit_index),
+    .is_msb(is_msb),
+    .is_lsb(is_lsb),
+    .is_valid(is_valid),
     .input_counter_clr(input_counter_clr),
     .input_counter_ld(input_counter_ld),
     .input_counter_co(input_counter_co),
-
     .register_array(register_array),
     .ra_in_acc(ra_in_acc)
-
-
-    
 );
 
-
-cluster_ctrl MCTRL(
+cluster_ctrl_serial MCTRL(
     .clk(clk),
     .rstn(rstn),
     .start(start),
@@ -85,7 +74,11 @@ cluster_ctrl MCTRL(
     .input_weight_ren(input_weight_ren),
     .input_counter_clr(input_counter_clr),
     .input_counter_ld(input_counter_ld),
-    .input_counter_co(input_counter_co)
-     );
+    .input_counter_co(input_counter_co),
+    .bit_index(bit_index),
+    .is_msb(is_msb),
+    .is_lsb(is_lsb),
+    .is_valid(is_valid)
+);
 
 endmodule

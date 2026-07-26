@@ -16,4 +16,4 @@ build/*
 *.vcd
 results.xml
 
-report/typst
+# report/typst
