@@ -34,7 +34,8 @@
         module Stripes#(
             parameter  N = 4,
             parameter  W_WIDTH = 16,
-            parameter  MP = 16
+            parameter  MP = 16,
+            parameter ACC_WIDTH  = W_WIDTH + $clog2(N) + MP
           ) (
             input   clk,
             input   reset,
@@ -47,7 +48,6 @@
             output  [ACC_WIDTH-1:0] o_dot_product
           );
 
-          parameter ACC_WIDTH  = W_WIDTH + $clog2(N) + MP;
 
 
           // Multiply Part

@@ -9,8 +9,8 @@ COMPILE_ARGS += -Ihardware/include
 EXTRA_ARGS += --trace --timing -Wno-ASCRANGE -Wno-WIDTHEXPAND -Wno-WIDTHTRUNC -Wno-CASEINCOMPLETE -Wno-COMBDLY -Wno-LATCH -Wno-UNOPTFLAT
 
 # select the terget arch
-COCOTB_TOPLEVEL = cluster_wrapper
-# COCOTB_TOPLEVEL = cluster_wrapper_bit_serial
+# COCOTB_TOPLEVEL = cluster_wrapper
+COCOTB_TOPLEVEL = cluster_wrapper_bit_serial
 # COCOTB_TOPLEVEL = cluster_wrapper_bit_sparsity
 
 COCOTB_TEST_MODULES = test_bench
