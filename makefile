@@ -10,8 +10,8 @@ EXTRA_ARGS += --trace --timing -Wno-ASCRANGE -Wno-WIDTHEXPAND -Wno-WIDTHTRUNC -W
 
 # select the terget arch
 # COCOTB_TOPLEVEL = cluster_wrapper
-COCOTB_TOPLEVEL = cluster_wrapper_bit_serial
-# COCOTB_TOPLEVEL = cluster_wrapper_bit_sparsity
+# COCOTB_TOPLEVEL = cluster_wrapper_bit_serial
+COCOTB_TOPLEVEL = cluster_wrapper_bit_sparsity
 
 COCOTB_TEST_MODULES = test_bench
 

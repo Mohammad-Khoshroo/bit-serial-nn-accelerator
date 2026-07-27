@@ -18,8 +18,8 @@ torch.manual_seed(SEED)
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
 
-logging.getLogger("cocotb.cluster_wrapper_bit_serial").setLevel(logging.WARNING)
-# logging.getLogger("cocotb.cluster_wrapper_bit_sparsity").setLevel(logging.WARNING)
+# logging.getLogger("cocotb.cluster_wrapper_bit_serial").setLevel(logging.WARNING)
+logging.getLogger("cocotb.cluster_wrapper_bit_sparsity").setLevel(logging.WARNING)
 # logging.getLogger("cocotb.cluster_wrapper").setLevel(logging.WARNING)
 
 logging.getLogger("cocotbext.axi").setLevel(logging.WARNING)
