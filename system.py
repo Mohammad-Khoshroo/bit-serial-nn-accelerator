@@ -85,7 +85,7 @@ class accelerator_driver():
         while not done:
             read_val = await self.axi_master_config.read(0x04, length=4)
             done = bool(read_val.data[2])
-            await Timer(10, units='ns') # pyright: ignore[reportArgumentType]
+            await Timer(10, unit='ns') # pyright: ignore[reportArgumentType]
         
         # issue start(0) as acknowledge
         await self.axi_master_config.write(0x00, (0).to_bytes(4, 'little'))

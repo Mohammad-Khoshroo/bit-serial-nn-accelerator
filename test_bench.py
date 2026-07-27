@@ -2,6 +2,7 @@ import sys
 import os
 import numpy as np
 import torch
+import random
 import torch.nn.init as init
 import cocotb
 from cocotb.triggers import Timer
@@ -10,11 +11,16 @@ from cocotb.utils import get_sim_time
 from cocotb.utils import get_sim_time
 import logging
 
+SEED = 42
+random.seed(SEED)
+np.random.seed(SEED)
+torch.manual_seed(SEED)
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
 
-logging.getLogger("cocotb.cluster_wrapper_bit_serial").setLevel(logging.WARNING)
+# logging.getLogger("cocotb.cluster_wrapper_bit_serial").setLevel(logging.WARNING)
 # logging.getLogger("cocotb.cluster_wrapper_bit_sparsity").setLevel(logging.WARNING)
-# logging.getLogger("cocotb.cluster_wrapper").setLevel(logging.WARNING)
+logging.getLogger("cocotb.cluster_wrapper").setLevel(logging.WARNING)
 
 logging.getLogger("cocotbext.axi").setLevel(logging.WARNING)
 

@@ -45,7 +45,9 @@ always @(posedge clk) begin
     if (!rstn) begin
         bit_counter <= 4'd8;
     end else begin
-        if (is_msb) begin
+        if (is_lsb) begin
+            bit_counter <= 4'd8;
+        end else if (is_msb) begin
             bit_counter <= 4'd7;
         end else if (is_valid) begin
             if (bit_counter == 4'd0)
@@ -56,7 +58,7 @@ always @(posedge clk) begin
     end
 end
 assign bit_index = bit_counter;
-assign bit_co = (bit_counter == 4'd0);
+assign bit_co = (bit_counter == 4'd0) && is_valid;
 
 wire signed [INPUT_D_W : 0] input_signed; 
 assign input_signed = $signed({1'b0, input_data}) - $signed({1'b0, input_zp});

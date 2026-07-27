@@ -13,7 +13,7 @@ module cluster_ctrl_serial(
     output reg input_counter_clr,
     output reg input_counter_ld,
     input input_counter_co,
-    input bit_co, // From Datapath
+    input bit_co,
     output reg is_msb,
     output reg is_lsb,
     output reg is_valid
@@ -63,7 +63,6 @@ always @(*) begin
     end
     
     S_MSB: begin
-        // CRITICAL: is_valid is 1 here, just like your testbench
         is_valid = 1'b1;
         is_msb = 1'b1;
         input_weight_ren = 1'b1;
@@ -75,7 +74,6 @@ always @(*) begin
     end
     
     S_LSB: begin
-        // CRITICAL: is_valid STAYS 1 here, just like your testbench
         is_valid = 1'b1;
         ra_ld_acc = 1'b1;
         is_lsb = 1'b1;      
