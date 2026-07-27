@@ -1,3 +1,6 @@
 [submodule "external/verilator"]
 	path = external/verilator
 	url = git@github.com:verilator/verilator.git
+[submodule "external/rtl-mvm-stripes"]
+	path = external/rtl-mvm-stripes
+	url = git@github.com:Mohammad-Khoshroo/rtl-mvm-stripes.git
