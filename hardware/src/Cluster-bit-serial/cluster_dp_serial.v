@@ -72,7 +72,11 @@ generate
         assign acc_out = register_array[(k) * 32 +: 32];
         
         wire a_bit = input_signed[bit_index]; 
-        
+
+        wire signed [WEIGHT_MEM_D_W-1:0] weight = weight_data[(k) * WEIGHT_MEM_D_W +: WEIGHT_MEM_D_W];
+        wire [WEIGHT_MEM_D_W:0] weight_s;
+        assign weight_s = {weight[WEIGHT_MEM_D_W-1], weight};
+
         Stripes pe_inst (
             .clk(clk),
             .reset(~rstn),
@@ -80,7 +84,7 @@ generate
             .i_is_lsb(is_lsb),
             .i_is_valid(is_valid),
             .a_bits(a_bit),
-            .b_vec(weight_data[(k) * WEIGHT_MEM_D_W +: WEIGHT_MEM_D_W]),
+            .b_vec(weight_s),
             .initial_sum(acc_out),
             .o_dot_product(pe_out)
         );

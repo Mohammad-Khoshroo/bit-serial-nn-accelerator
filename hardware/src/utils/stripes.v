@@ -29,9 +29,9 @@
 `define STRIPES_MODULE
 
         module Stripes #(
-            parameter  W_WIDTH = 8,
-            parameter  MP = 9,
-            parameter  ACC_WIDTH = 33
+            parameter  W_WIDTH = 9,
+            // parameter  MP = 9,
+            parameter  ACC_WIDTH = 32
           ) (
             input   clk,
             input   reset,
@@ -56,10 +56,10 @@
           // Accumulation
           wire [ACC_WIDTH-1:0] acc_sum;
           wire [ACC_WIDTH-1:0] shifted_acc_sum;
-          wire [ACC_WIDTH-1:0] new_acc_sum;
+          wire signed [ACC_WIDTH-1:0] new_acc_sum;
 
           assign shifted_acc_sum = {acc_sum[ACC_WIDTH-2:0], 1'b0};
-          assign new_acc_sum     = shifted_acc_sum + product_sum;
+          assign new_acc_sum     = $signed({1'b0, shifted_acc_sum}) + $signed({1'b0, product_sum});
 
           RegisterC #(
                       .WIDTH(ACC_WIDTH)
@@ -73,7 +73,7 @@
                       .q(acc_sum)
                     );
 
-          assign  o_dot_product = initial_sum + acc_sum;
+          assign  o_dot_product = $signed({1'b0, initial_sum}) + $signed({1'b0, acc_sum});
 
         endmodule
 

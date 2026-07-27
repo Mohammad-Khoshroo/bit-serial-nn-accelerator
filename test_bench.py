@@ -79,11 +79,29 @@ async def test_linear_layer(dut):
     
     hw_output = AH.output
     
-    print("\n--- Linear Golden Output Sample ---")
-    print(golden_output.flatten()[:5])
-    print("--- Linear Hardware Output Sample ---")
-    print(hw_output.flatten()[:5])
+    diff = (hw_output - golden_output).abs()
+    mismatch_indices = (diff > 1e-3).nonzero()
     
+    if mismatch_indices.numel() > 0:
+        print("\n--- MISMATCH FOUND AT INDICES ---")
+        for idx in mismatch_indices:
+            i = tuple(idx.tolist())
+            print(f"Index {i}:")
+            print(f"  Golden: {golden_output[i].item()}")
+            print(f"  HW    : {hw_output[i].item()}")
+            print(f"  Diff  : {diff[i].item()}")
+    else:
+        print("\n--- Outputs match perfectly! ---")
+        
+    torch.set_printoptions(profile="full")
+    
+    print("\n--- Linear Golden Output ---")
+    print(golden_output.flatten())
+    print("--- Linear Hardware Output ---")
+    print(hw_output.flatten())
+    
+    torch.set_printoptions(profile="default")
+
     assert torch.allclose(hw_output, golden_output, atol=1e-3, rtol=1e-3), \
         "Linear Hardware output does not match golden output!"
         

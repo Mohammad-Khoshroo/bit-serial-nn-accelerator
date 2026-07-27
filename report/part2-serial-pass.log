@@ -1,0 +1,65 @@
+rm -f results.xml
+"make" -f makefile results.xml
+make[1]: Entering directory '/mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10'
+rm -f results.xml
+COCOTB_TEST_MODULES=test_bench COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=cluster_wrapper_bit_serial TOPLEVEL_LANG=verilog \
+         build/Vtop  --trace --timing -Wno-ASCRANGE -Wno-WIDTHEXPAND -Wno-WIDTHTRUNC -Wno-CASEINCOMPLETE -Wno-COMBDLY -Wno-LATCH -Wno-UNOPTFLAT   
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:93   in _embed_init_python              Using Python 3.12.4 interpreter at /usr/bin/python3
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:79   in gpi_print_registered_impl       VPI registered
+     0.00ns INFO     cocotb                             Running on Verilator version 5.050 2026-07-01
+     0.00ns INFO     cocotb                             Seeding Python random module with 1785157921
+     0.00ns INFO     cocotb                             Initialized cocotb v2.0.1 from /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_bench.test_linear_layer (1/1)
+                                                            Test QuantLinear (MLP) layer with bias against Golden Model.
+     0.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:35: DeprecationWarning: Use ``cocotb.start_soon`` instead.
+                                                          await cocotb.start(Clock(dut.s00_axi_aclk, axi_duty, unit="ps").start()) # pyright: ignore[reportArgumentType]
+     0.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:36: DeprecationWarning: Use ``cocotb.start_soon`` instead.
+                                                          await cocotb.start(Clock(dut.s01_axi_aclk, axi_duty, unit="ps").start()) # pyright: ignore[reportArgumentType]
+     0.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:37: DeprecationWarning: Use ``cocotb.start_soon`` instead.
+                                                          await cocotb.start(Clock(dut.s02_axi_aclk, axi_duty, unit="ps").start()) # pyright: ignore[reportArgumentType]
+     0.00ns WARNING  py.warnings                        /mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10/test_bench.py:38: DeprecationWarning: Use ``cocotb.start_soon`` instead.
+                                                          await cocotb.start(Clock(dut.logic_clk,  logic_duty, unit="ps").start()) # pyright: ignore[reportArgumentType]
+   300.00ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/stream.py:120: DeprecationWarning: Use `handle.set(Immediate(...))` or `handle.value = Immediate(...)` instead.
+                                                          self.valid.setimmediatevalue(self._valid_init)
+   300.00ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/stream.py:133: DeprecationWarning: Use `handle.set(Immediate(...))` or `handle.value = Immediate(...)` instead.
+                                                          s.setimmediatevalue(v)
+   300.00ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/stream.py:115: DeprecationWarning: Use `handle.set(Immediate(...))` or `handle.value = Immediate(...)` instead.
+                                                          self.ready.setimmediatevalue(self._ready_init)
+   300.00ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/reset.py:59: DeprecationWarning: Use `signal.value_change` instead.
+                                                          await Edge(reset_signal)
+   300.35ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/axi_master.py:630: DeprecationWarning: The data field will be removed in a future release.
+                                                          cmd.event.set(write_resp)
+   300.35ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/axi_master.py:423: DeprecationWarning: The data field will be removed in a future release.
+                                                          return event.data
+   304.45ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/axi_master.py:1030: DeprecationWarning: The data field will be removed in a future release.
+                                                          cmd.event.set(read_resp)
+   304.45ns WARNING  py.warnings                        /home/mohammad-khoshroo/.local/lib/python3.12/site-packages/cocotbext/axi/axi_master.py:834: DeprecationWarning: The data field will be removed in a future release.
+                                                          return event.data
+
+--- Outputs match perfectly! ---
+
+--- Linear Golden Output ---
+tensor([ 0.0404,  0.0615, -0.1786, -0.0157,  0.1258, -0.0098, -0.1596, -0.0621,
+         0.0977,  0.0898,  0.0925, -0.0503, -0.0419,  0.1926,  0.1518, -0.0964,
+         0.0672, -0.0909, -0.0481,  0.0067,  0.0222,  0.0301, -0.1915,  0.0741,
+        -0.1354,  0.0835,  0.0299, -0.0846,  0.0884,  0.1001, -0.0501,  0.0987],
+       grad_fn=<ViewBackward0>)
+--- Linear Hardware Output ---
+tensor([ 0.0404,  0.0615, -0.1786, -0.0157,  0.1258, -0.0098, -0.1596, -0.0621,
+         0.0977,  0.0898,  0.0925, -0.0503, -0.0419,  0.1926,  0.1518, -0.0964,
+         0.0672, -0.0909, -0.0481,  0.0067,  0.0222,  0.0301, -0.1915,  0.0741,
+        -0.1354,  0.0835,  0.0299, -0.0846,  0.0884,  0.1001, -0.0501,  0.0987],
+       grad_fn=<ViewBackward0>)
+
+[SUCCESS] Linear test passed! Execution time: 69.41000000000003 ns
+   369.41ns INFO     cocotb.regression                  test_bench.test_linear_layer passed
+   369.41ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_bench.test_linear_layer   PASS         369.41           1.26        293.18  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                369.41           1.26        292.55  **
+                                                        **************************************************************************************
+- :0: Verilog $finish
+make[1]: Leaving directory '/mnt/d/UT.CE/Term-06/HW4AI/HW-CA/HW10'
