@@ -4,3 +4,6 @@
 [submodule "external/rtl-mvm-stripes"]
 	path = external/rtl-mvm-stripes
 	url = git@github.com:Mohammad-Khoshroo/rtl-mvm-stripes.git
+[submodule "external/rtl-sparse-stripes"]
+	path = external/rtl-sparse-stripes
+	url = git@github.com:Mohammad-Khoshroo/rtl-sparse-stripes.git
