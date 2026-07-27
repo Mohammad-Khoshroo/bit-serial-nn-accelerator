@@ -31,15 +31,15 @@
         module Stripes #(
             parameter  W_WIDTH = 8,
             parameter  MP = 9,
-            parameter  ACC_WIDTH = 32
+            parameter  ACC_WIDTH = 33
           ) (
             input   clk,
             input   reset,
             input   i_is_msb,
             input   i_is_lsb,
             input   i_is_valid,
-            input   a_bits,             // 1-bit
-            input   [W_WIDTH-1:0] b_vec, // Single weight
+            input   a_bits,             
+            input   [W_WIDTH-1:0] b_vec, 
             input   [ACC_WIDTH-1:0] initial_sum,
             output  [ACC_WIDTH-1:0] o_dot_product
           );

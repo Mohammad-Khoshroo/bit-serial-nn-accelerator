@@ -41,10 +41,10 @@ always @(*) begin
     case(ps)
     S_IDLE:         ns = start ? S_LD_BETA : S_IDLE;
     S_LD_BETA:      ns = S_CALCULATE;
-    S_CALCULATE:    ns = input_counter_co ? S_WRITE_TO_MEM : S_MSB;
+    S_CALCULATE:    ns = S_MSB;
     S_MSB:          ns = S_MULTIPLY;
     S_MULTIPLY:     ns = bit_co ? S_LSB : S_MULTIPLY;
-    S_LSB:          ns = S_CALCULATE;
+    S_LSB:          ns = input_counter_co ? S_WRITE_TO_MEM : S_CALCULATE;
     S_WRITE_TO_MEM: ns = S_WAIT_ACK;
     S_WAIT_ACK:     ns = ~start ? S_IDLE : S_WAIT_ACK;
     endcase
@@ -74,7 +74,7 @@ always @(*) begin
     end
     
     S_LSB: begin
-        is_valid = 1'b1;
+        is_valid = 1'b0;
         ra_ld_acc = 1'b1;
         is_lsb = 1'b1;      
         input_counter_ld = 1'b1;
