@@ -37,7 +37,8 @@ wire input_counter_clr;
 wire input_counter_ld;
 wire input_counter_co;
 
-wire [2:0] bit_index;
+wire [3:0] bit_index;
+wire bit_co;
 wire is_msb;
 wire is_lsb;
 wire is_valid;
@@ -52,6 +53,7 @@ cluster_dp_serial MDP(
     .input_weight_address(input_weight_address),
     .input_zp(input_zp),
     .bit_index(bit_index),
+    .bit_co(bit_co),
     .is_msb(is_msb),
     .is_lsb(is_lsb),
     .is_valid(is_valid),
@@ -75,7 +77,7 @@ cluster_ctrl_serial MCTRL(
     .input_counter_clr(input_counter_clr),
     .input_counter_ld(input_counter_ld),
     .input_counter_co(input_counter_co),
-    .bit_index(bit_index),
+    .bit_co(bit_co),
     .is_msb(is_msb),
     .is_lsb(is_lsb),
     .is_valid(is_valid)

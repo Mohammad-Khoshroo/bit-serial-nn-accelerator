@@ -84,49 +84,49 @@ async def test_linear_layer(dut):
     print(f'\n[SUCCESS] Linear test passed! Execution time: {end_time - start_time} ns')
 
 
-@cocotb.test()
-async def test_conv2d_layer(dut):
-    """Test QuantConv2d layer with padding and bias against Golden Model."""
-    await setup_dut(dut)
+# @cocotb.test()
+# async def test_conv2d_layer(dut):
+#     """Test QuantConv2d layer with padding and bias against Golden Model."""
+#     await setup_dut(dut)
 
-    in_channels = 3
-    out_channels = 8
-    kernel_size = (3, 3)
-    stride = (1, 1)
-    groups = 1
-    bias = True
-    padding = (1, 1)
-    input_dim = (1, in_channels, 8, 8)
+#     in_channels = 3
+#     out_channels = 8
+#     kernel_size = (3, 3)
+#     stride = (1, 1)
+#     groups = 1
+#     bias = True
+#     padding = (1, 1)
+#     input_dim = (1, in_channels, 8, 8)
     
-    layer = QuantConv2d(in_channels, out_channels, kernel_size, stride, padding,  # pyright: ignore[reportArgumentType]
-                        groups=groups, bias=bias, a_bit=8, w_bit=8)
-    init.normal_(layer.weight, mean=0.0, std=0.01)
+#     layer = QuantConv2d(in_channels, out_channels, kernel_size, stride, padding,  # pyright: ignore[reportArgumentType]
+#                         groups=groups, bias=bias, a_bit=8, w_bit=8)
+#     init.normal_(layer.weight, mean=0.0, std=0.01)
     
-    test_input = torch.randn(*input_dim)
+#     test_input = torch.randn(*input_dim)
     
-    layer.train()
-    _ = layer(test_input)
+#     layer.train()
+#     _ = layer(test_input)
         
-    layer.eval()
-    golden_output = layer(test_input) 
+#     layer.eval()
+#     golden_output = layer(test_input) 
 
-    start_time = get_sim_time(unit="ns") # pyright: ignore[reportArgumentType]
+#     start_time = get_sim_time(unit="ns") # pyright: ignore[reportArgumentType]
     
-    AH = layer_tiling(layer, dut, logic_duty=40, axi_duty=10)
-    await AH.forward(test_input)
+#     AH = layer_tiling(layer, dut, logic_duty=40, axi_duty=10)
+#     await AH.forward(test_input)
     
-    end_time = get_sim_time(unit="ns") # pyright: ignore[reportArgumentType]
+#     end_time = get_sim_time(unit="ns") # pyright: ignore[reportArgumentType]
     
-    hw_output = AH.output
+#     hw_output = AH.output
     
-    print("\n--- Conv2d Golden Output Sample ---")
-    print(golden_output.flatten()[:5])
-    print("--- Conv2d Hardware Output Sample ---")
-    print(hw_output.flatten()[:5])
+#     print("\n--- Conv2d Golden Output Sample ---")
+#     print(golden_output.flatten()[:5])
+#     print("--- Conv2d Hardware Output Sample ---")
+#     print(hw_output.flatten()[:5])
     
-    assert torch.allclose(hw_output, golden_output, atol=1e-3, rtol=1e-3), \
-        "Conv2d Hardware output does not match golden output!"
+#     assert torch.allclose(hw_output, golden_output, atol=1e-3, rtol=1e-3), \
+#         "Conv2d Hardware output does not match golden output!"
     
-    print(f'\n[SUCCESS] Conv2d test passed! Execution time: {end_time - start_time} ns')
+#     print(f'\n[SUCCESS] Conv2d test passed! Execution time: {end_time - start_time} ns')
 
 

@@ -13,10 +13,10 @@ module cluster_ctrl_serial(
     output reg input_counter_clr,
     output reg input_counter_ld,
     input input_counter_co,
+    input bit_co, // From Datapath
     output reg is_msb,
     output reg is_lsb,
-    output reg is_valid,
-    output reg [2:0] bit_index
+    output reg is_valid
 );
 
 localparam [2:0] 
@@ -31,42 +31,20 @@ localparam [2:0]
 
 reg [2:0] ps, ns;
 
-reg [2:0] bit_counter;
-
 always @(posedge clk) begin
-    if (!rstn) begin
-        ps <= S_IDLE;
-        bit_counter <= 3'd7;
-    end else begin
-        ps <= ns;
-        
-        if (ps == S_MSB) begin
-            bit_counter <= 3'd6;
-        end else if (ps == S_MULTIPLY) begin
-            if (bit_counter == 3'd1)
-                bit_counter <= 3'd0;
-            else
-                bit_counter <= bit_counter - 1;
-        end else if (ps == S_LSB) begin
-            bit_counter <= 3'd7;
-        end
-    end
+    if (!rstn) ps <= S_IDLE;
+    else       ps <= ns;
 end
-
-assign bit_index = bit_counter;
 
 always @(*) begin
     ns = S_IDLE;
     case(ps)
     S_IDLE:         ns = start ? S_LD_BETA : S_IDLE;
     S_LD_BETA:      ns = S_CALCULATE;
-    
     S_CALCULATE:    ns = input_counter_co ? S_WRITE_TO_MEM : S_MSB;
-    
     S_MSB:          ns = S_MULTIPLY;
-    S_MULTIPLY:     ns = (bit_counter == 3'd1) ? S_LSB : S_MULTIPLY;
+    S_MULTIPLY:     ns = bit_co ? S_LSB : S_MULTIPLY;
     S_LSB:          ns = S_CALCULATE;
-    
     S_WRITE_TO_MEM: ns = S_WAIT_ACK;
     S_WAIT_ACK:     ns = ~start ? S_IDLE : S_WAIT_ACK;
     endcase
@@ -78,27 +56,31 @@ always @(*) begin
     
     case(ps)
     S_IDLE: input_counter_clr = 1'b1;
-    
     S_LD_BETA: ra_ld_axi = 1'b1;
     
     S_CALCULATE: begin
-        input_counter_ld = 1'b1; 
         input_weight_ren = 1'b1; 
-        ra_ld_acc = 1'b1;
     end
     
     S_MSB: begin
+        // CRITICAL: is_valid is 1 here, just like your testbench
         is_valid = 1'b1;
         is_msb = 1'b1;
+        input_weight_ren = 1'b1;
     end
     
     S_MULTIPLY: begin
         is_valid = 1'b1;
+        input_weight_ren = 1'b1;
     end
     
     S_LSB: begin
+        // CRITICAL: is_valid STAYS 1 here, just like your testbench
+        is_valid = 1'b1;
         ra_ld_acc = 1'b1;
         is_lsb = 1'b1;      
+        input_counter_ld = 1'b1;
+        input_weight_ren = 1'b1;
     end
     
     S_WRITE_TO_MEM: {axi_ram_ld, logic_wen, done} = 3'b111;

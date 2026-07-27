@@ -23,7 +23,8 @@ module cluster_dp_serial #(
     input is_msb,
     input is_lsb,
     input is_valid,
-    input [2:0] bit_index,
+    output [3:0] bit_index,
+    output bit_co,
     output reg [BYTE_REG_NUM * 8-1:0] ra_in_acc,
     input [BYTE_REG_NUM * 8-1:0] register_array
 );
@@ -38,25 +39,39 @@ end
 assign input_counter_co = input_counter_r >= input_size;
 assign input_weight_address = input_counter_r;
 
+// Bit Counter
+reg [3:0] bit_counter;
+always @(posedge clk) begin
+    if (!rstn) begin
+        bit_counter <= 4'd8;
+    end else begin
+        if (is_msb) begin
+            bit_counter <= 4'd7;
+        end else if (is_valid) begin
+            if (bit_counter == 4'd0)
+                bit_counter <= 4'd8;
+            else
+                bit_counter <= bit_counter - 1;
+        end
+    end
+end
+assign bit_index = bit_counter;
+assign bit_co = (bit_counter == 4'd0);
+
 wire signed [INPUT_D_W : 0] input_signed; 
 assign input_signed = $signed({1'b0, input_data}) - $signed({1'b0, input_zp});
 
 genvar k;
 generate
     for (k = 0; k < MAX_PES; k = k + 1) begin : PE_GEN
-        wire [PE_D_W - 1 : 0] acc_out;
-        wire [PE_D_W - 1 : 0] pe_out;
+        wire [31:0] acc_out;
+        wire [31:0] pe_out;
         
-        assign acc_out = register_array[(k) * PE_D_W +: PE_D_W];
+        assign acc_out = register_array[(k) * 32 +: 32];
         
         wire a_bit = input_signed[bit_index]; 
         
-        Stripes #(
-            .N(1),
-            .W_WIDTH(WEIGHT_MEM_D_W),
-            .MP(INPUT_D_W),
-            .ACC_WIDTH(PE_D_W)
-        ) pe_inst (
+        Stripes pe_inst (
             .clk(clk),
             .reset(~rstn),
             .i_is_msb(is_msb),
@@ -68,7 +83,7 @@ generate
             .o_dot_product(pe_out)
         );
         
-        assign ra_in_acc[(k) * PE_D_W +: PE_D_W] = pe_out;
+        assign ra_in_acc[(k) * 32 +: 32] = pe_out;
     end
 endgenerate
 
