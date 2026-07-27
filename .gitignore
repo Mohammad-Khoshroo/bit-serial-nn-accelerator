@@ -13,7 +13,7 @@ build/*
 
 # Waveforms and logs
 *.fst
-*.vcd
+# *.vcd
 results.xml
 
 # report/typst
